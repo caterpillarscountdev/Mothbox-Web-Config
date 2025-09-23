@@ -4,7 +4,7 @@ A local web server to configure [Mothbox](https://github.com/Digital-Naturalism-
 
 ## Installation
 
-### Local ddevelopment
+### Local development
 
 Clone the repo and run
 ```
@@ -17,7 +17,7 @@ To run the development server
 flask --app=app.mothbox run --debug
 ```
 
-[http://localhost:5000/]
+[http://localhost:5000/](http://localhost:5000/)
 
 ### On a Mothbox image
 
@@ -37,4 +37,4 @@ Run install.sh to:
 ./install.sh
 ```
 
-[https://mothbox.local] Will warn for self-signed certificate - Advanced, Accept The Risk.
+[https://mothbox.local/](https://mothbox.local/) Will warn for self-signed certificate - Advanced, Accept The Risk.

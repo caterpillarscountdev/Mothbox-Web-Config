@@ -44,3 +44,6 @@ sudo mv localssl.pem /etc/ssl/certs/
 sudo mv localssl.key /etc/ssl/private/
 
 sudo systemctl restart apache2
+
+# Let users turn on debug mode without requiring sudo password
+sudo echo 'pi,www-data ALL=(ALL) NOPASSWD:/home/pi/Desktop/Mothbox/scripts/MothPower/stop_lowpower.sh' | sudo EDITOR='tee -a' visudo 

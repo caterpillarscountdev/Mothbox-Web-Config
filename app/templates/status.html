@@ -1,0 +1,18 @@
+{% extends "default.html" %}
+
+{% block title %}Status{% endblock %}
+
+{% block content %}
+
+<h2>Status</h2>
+
+<div class="status">
+  <p>This Mothbox has the name <em class="status-label">{{ status.controls.name }}</em> running software version <em class="status-label">{{ status.controls.softwareversion }}</em>
+  <p>It is assigned to the site <em class="status-label">{{ status.metadata.SiteName or "(No Site Assigned)"}}</em>
+  <p>It is scheduled to operate on <em class="status-label">{{ ", ".join(status.schedule.days)}}</em> at <em class="status-label">{{ ", ".join(status.schedule.hours)}}</em> for <em class="status-label">{{status.schedule.runtime}}</em> minutes.
+
+  <form method="POST" action="{{url_for("debug_mode")}}">
+    <input type="submit" class="save" value="Turn on Debug Mode to keep Wifi on until next restart" />
+  </form>
+</div>
+{% endblock %}

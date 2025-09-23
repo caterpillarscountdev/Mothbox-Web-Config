@@ -35,13 +35,22 @@
       </button>
     </div>
     <nav aria-label="Main" id="site-nav" class="site-nav">
-      <div class="status">{{ site.computerName }}</div>
-      <div class="status">v{{ site.version }} {{site.status}}</div>
       <ul class="nav-list">
         {% for node in site.nav_pages %}
+        {% if node.category %}
+        <ul class="nav-list nav-category-list">
+          <div class="nav-category">{{ node.category }}</div>
+          {% for page in node.pages %}
+          <li class="nav-list-item">
+            <a href="{{ page.url }}" class="nav-list-link"> {{ page.title }} </a>
+          </li>
+          {% endfor %}
+        </ul>
+        {% else %}
         <li class="nav-list-item">
           <a href="{{ node.url }}" class="nav-list-link"> {{ node.title }} </a>
         </li>
+        {% endif %}
         {% endfor %}
       </ul>      
       <ul class="nav-list">

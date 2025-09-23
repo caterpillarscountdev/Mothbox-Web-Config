@@ -1,12 +1,15 @@
-.site-nav .status {
-    min-height: 2rem;
-    line-height: 1.5rem;
-    padding-right: 2rem;
-    padding-left: 2rem;
-}
-
 .flex {
     display: flex;
+}
+
+.nav-list .nav-list .nav-list-item {
+    margin-left: 1rem;
+}
+
+.status-label {
+    background-color: #ff9;
+    padding: 0 0.4rem 0 0.4rem;
+    border-radius: 0.2rem;
 }
 
 /* Flash messages */
@@ -35,7 +38,8 @@ form fieldset {
     margin: 0.5rem;
 }
 form fieldset>label {
-    text-decoration: underline;
+    font-size: larger;
+    font-style: italic;
     padding-bottom: 0.5rem;
     display: block;
 }
@@ -54,5 +58,9 @@ form dd {
 
 form .save {
     margin-top: 2rem;
+    background-color: #aaf;
+    padding: 0.8rem;
+    border: 1px solid #339;
+    border-radius: 0.5rem;
 }
 

@@ -2,6 +2,7 @@ from flask import Flask, request, flash, render_template, url_for, redirect, abo
 
 from werkzeug.datastructures import MultiDict
 
+import subprocess
 
 from . import settings
 from . import forms
@@ -10,8 +11,9 @@ app = Flask(__name__)
 app.secret_key = 'notverysecretindev'
 
 
-controls = settings.load_control_values()
-
+metadata_path = settings.find_settings('site_metadata.csv')
+camera_path = settings.find_settings('camera_settings.csv')
+schedule_path = settings.find_settings()
 
 
 def site():
@@ -20,24 +22,44 @@ def site():
             "title": "Mothbox Setup",
             "logo": "/assets/images/logos/",
             "nav_pages": [
-                {"url": url_for("config_site"), "title": "Site"},
-                {"url": url_for("config_schedule"), "title": "Schedule"},
-                {"url": url_for("config_operation"), "title": "Operation"},
-                {"url": url_for("config_camera"), "title": "Camera"}
-            ],
-            "computerName": controls["name"],
-            "version": controls["softwareversion"],
-            "status": "DEBUG"
+                {"url": url_for("status"), "title": "Status"},
+                {"category": "Config",
+                 "pages": [
+                     {"url": url_for("config_site"), "title": "Site"},
+                     {"url": url_for("config_schedule"), "title": "Schedule"},
+                     {"url": url_for("config_operation"), "title": "Operation"},
+                     {"url": url_for("config_camera"), "title": "Camera"}
+                ]}
+            ]
         }
 
 
 @app.route("/")
 def index():
-    return redirect(url_for('config_site'))
+    return redirect(url_for('status'))
+
+@app.route('/status')
+def status():
+    controls = settings.load_control_values()
+    metadata = settings.load_settings(metadata_path)
+    schedule = settings.load_settings(schedule_path)
+    print(schedule)
+    schedule["days"] = [forms.days_of_week[int(x)-1] for x in schedule["weekday"].split(";")]
+    schedule["hours"] = [f'{int(x):02}:{schedule["minute"]:02}' for x in schedule["hour"].split(";")]
+    return render_template("status.html", site=site(), status=locals())
+
+@app.route('/debug-mode', methods=["POST"])
+def debug_mode():
+    try:
+        subprocess.run(["/home/pi/Desktop/DebugMode.py"])
+    except FileNotFoundError as e:
+        flash(f"Debug Mode failed: {e}", "error")
+    else:
+        flash("Debug mode enabled", "ok")
+    return redirect(url_for('status'))
 
 @app.route("/config/site", methods=["GET", "POST"])
 def config_site():
-    metadata_path = settings.find_settings('site_metadata.csv')
     metadata = settings.load_settings(metadata_path)
 
     metadata_for_form = MultiDict(metadata)
@@ -55,7 +77,6 @@ def config_site():
 
 @app.route("/config/schedule", methods=["GET", "POST"])
 def config_schedule():
-    schedule_path = settings.find_settings()
     schedule = settings.load_settings(schedule_path)
 
     schedule_for_form = MultiDict(schedule)
@@ -98,7 +119,6 @@ def config_operation():
 
 @app.route("/config/camera", methods=["GET", "POST"])
 def config_camera():
-    camera_path = settings.find_settings('camera_settings.csv')
     camera = settings.load_settings(camera_path)
     
     camera_for_form = MultiDict(camera)
