@@ -5,10 +5,10 @@ sudo cat > /etc/apache2/sites-available/001-mothbox.conf <<EOF
 <VirtualHost *:80>
 	ServerName mothbox.local
 
-	WSGIDaemonProcess mothbox python-path=/home/pi/Desktop/Mothbox/Web
-	WSGIScriptAlias / /home/pi/Desktop/Mothbox/Web/mothbox.wsgi
+	WSGIDaemonProcess mothbox python-path=/home/pi/Desktop/Mothbox/Web/app
+	WSGIScriptAlias / /home/pi/Desktop/Mothbox/Web/app/mothbox.wsgi
 
-	<Directory /home/pi/Desktop/Mothbox>
+	<Directory /home/pi/Desktop/Mothbox/Web>
     	Require all granted
 	</Directory>
 </VirtualHost>
@@ -17,8 +17,8 @@ sudo cat > /etc/apache2/sites-available/001-mothbox.conf <<EOF
 
 	SSLCertificateFile /etc/ssl/certs/localssl.pem
 	SSLCertificateKeyFile /etc/ssl/private/localssl.key
-	WSGIDaemonProcess mothboxssl python-path=/home/pi/Desktop/Mothbox/Web
-	WSGIScriptAlias / /home/pi/Desktop/Mothbox/Web/mothbox.wsgi
+	WSGIDaemonProcess mothboxssl python-path=/home/pi/Desktop/Mothbox/Web/app
+	WSGIScriptAlias / /home/pi/Desktop/Mothbox/Web/app/mothbox.wsgi
 
 	<Directory /home/pi/Desktop/Mothbox/Web>
     	Require all granted
@@ -32,7 +32,7 @@ sudo a2enmod ssl
 
 cd /home/pi/Desktop/Mothbox/Web
 virtualenv .venv
-. .venv/activate
+. .venv/bin/activate
 pip install -r requirements.txt
 
 openssl req -x509 -out localssl.pem -keyout localssl.key \                             	 

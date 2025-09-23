@@ -4,8 +4,12 @@ from werkzeug.datastructures import MultiDict
 
 import subprocess
 
-from . import settings
-from . import forms
+try:
+    import settings
+    import forms
+except ImportError:
+    from . import settings
+    from . import forms
 
 app = Flask(__name__)
 app.secret_key = 'notverysecretindev'
