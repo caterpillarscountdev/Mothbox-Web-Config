@@ -1,0 +1,27 @@
+{% extends "default.html" %}
+{% from "_forms.html" import render_field %}
+
+{% block title %}Schedule Configuration{% endblock %}
+
+{% block content %}
+
+<h2>Schedule Configuration</h2>
+
+<form name="config" autocomplete="off" method="POST">
+  <fieldset>
+    <label>When to activate</label>
+    <div class="flex">
+      {{ render_field(form.weekday) }}
+      {{ render_field(form.hour) }}
+    </div>
+    {{ render_field(form.minute) }}
+    {{ render_field(form.second) }}
+    {{ render_field(form.utc_off) }}
+    {{ render_field(form.runtime) }}
+  </fieldset>
+  
+  <input class="save" type="submit" value="Save" />
+  
+</form>
+
+{% endblock %}

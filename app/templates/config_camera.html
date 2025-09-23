@@ -1,0 +1,33 @@
+{% extends "default.html" %}
+{% from "_forms.html" import render_field %}
+
+{% block title %}Camera Configuration{% endblock %}
+
+{% block content %}
+
+<h2>Camera Configuration</h2>
+
+<form name="config" autocomplete="off" method="POST">
+  <fieldset>
+    <label>Camera Settings</label>
+    {{ render_field(form.LensPosition) }}
+    {{ render_field(form.ExposureValue) }}
+    {{ render_field(form.ExposureTime) }}
+    {{ render_field(form.AnalogueGain) }}
+    {{ render_field(form.AfMode) }}
+    {{ render_field(form.AfSpeed) }}
+    {{ render_field(form.AfRange) }}
+    {{ render_field(form.AwbEnable) }}
+    {{ render_field(form.HDR) }}
+    {{ render_field(form.HDR_width) }}
+    {{ render_field(form.AutoCalibration) }}
+    {{ render_field(form.AutoCalibrationPeriod) }}
+    {{ render_field(form.ImageFileType) }}
+    {{ render_field(form.VerticalFlip) }}
+  </fieldset>
+  
+  <input class="save" type="submit" value="Save" />
+  
+</form>
+
+{% endblock %}

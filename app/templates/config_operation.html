@@ -1,0 +1,25 @@
+{% extends "default.html" %}
+{% from "_forms.html" import render_field %}
+
+{% block title %}Operating Configuration{% endblock %}
+
+{% block content %}
+
+<h2>Operating Configuration</h2>
+
+<form name="config" autocomplete="off" method="POST">
+  <fieldset>
+    <label>Operation settings</label>
+    {{ render_field(form.onlyflash) }}
+  </fieldset>
+  <fieldset>
+    <label>Connect to wifi?</label>
+    {{ render_field(form.ssid) }}
+    {{ render_field(form.wifipass) }}
+  </fieldset>
+  
+  <input class="save" type="submit" value="Save" />
+  
+</form>
+
+{% endblock %}
