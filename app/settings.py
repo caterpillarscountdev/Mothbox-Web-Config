@@ -5,7 +5,7 @@ PI_PATH = '/home/pi/Desktop/Mothbox'
 
 def relative_file(path):
     if (os.path.exists(PI_PATH)):
-        return PI_PATH
+        return os.path.join(PI_PATH, path)
 
     here = os.path.dirname(os.path.realpath(__file__))
     return os.path.normpath(os.path.join(here, "../", path))
