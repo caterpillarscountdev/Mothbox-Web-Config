@@ -72,7 +72,7 @@ def config_site():
 
     if request.method == 'POST':
         if form.validate():
-            settings.write_settings(metadata_path, d)
+            settings.write_settings(metadata_path, form.data)
             flash("Saved configuration", "ok")
         else:
             flash("Validation error", "error")

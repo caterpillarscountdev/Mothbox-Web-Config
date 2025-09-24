@@ -1,10 +1,14 @@
 import csv
 import os
 
+PI_PATH = '/home/pi/Desktop/Mothbox'
 
 def relative_file(path):
+    if (os.path.exists(PI_PATH)):
+        return PI_PATH
+
     here = os.path.dirname(os.path.realpath(__file__))
-    return os.path.normpath(os.path.join(here, "..", path))
+    return os.path.normpath(os.path.join(here, "../", path))
 
 def find_file(path, filename, depth=1):
     """

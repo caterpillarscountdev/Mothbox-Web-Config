@@ -47,3 +47,8 @@ sudo systemctl restart apache2
 
 # Let users turn on debug mode without requiring sudo password
 sudo echo 'pi,www-data ALL=(ALL) NOPASSWD:/home/pi/Desktop/Mothbox/scripts/MothPower/stop_lowpower.sh' | sudo EDITOR='tee -a' visudo 
+
+# Allow apache to write config files
+chmod +w /home/pi/Desktop/Mothbox/controls.txt
+chmod +w /home/pi/Desktop/Mothbox/schedule_settings.csv
+chmod +w /home/pi/Desktop/Mothbox/camera_settings.csv
