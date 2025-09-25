@@ -3,6 +3,15 @@
 
 {% block title %}Schedule Configuration{% endblock %}
 
+{% block script %}
+
+<script>
+ 
+</script>
+<script src="/static/js/map-lat-lon.js"></script>
+
+{% endblock %}
+
 {% block content %}
 
 <h2>Site Configuration</h2>
@@ -11,13 +20,19 @@
   <fieldset>
     <label>Deployment Metadata</label>
     {{ render_field(form.SiteName) }}
-    {{ render_field(form.SiteLat) }}
-    {{ render_field(form.SiteLon) }}
+    <div class="moveMapLabel">Move the pin or double-click the deployed location.</div>
+    <div id="map" class="latlonMap"><div id="map-canvas"></div></div>
+    <div class="flex">
+      {{ render_field(form.SiteLat) }}
+      {{ render_field(form.SiteLon) }}
+    </div>
     {{ render_field(form.SiteCrew) }}
   </fieldset>
   
   <input class="save" type="submit" value="Save" />
   
 </form>
+
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCPyvYYr8Y6CkT3K6NUh-UO-Nj5_YsLC2E&loading=async&callback=createMap"></script>
 
 {% endblock %}
