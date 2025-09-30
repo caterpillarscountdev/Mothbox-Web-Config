@@ -3,13 +3,17 @@ from flask import Flask, request, flash, render_template, url_for, redirect, abo
 from werkzeug.datastructures import MultiDict
 
 import subprocess
+import urllib.request
+
 
 try:
     import settings
     import forms
+    import switches
 except ImportError:
     from . import settings
     from . import forms
+    from . import switches
 
 app = Flask(__name__)
 app.secret_key = 'notverysecretindev'
@@ -47,9 +51,13 @@ def status():
     controls = settings.load_control_values()
     metadata = settings.load_settings(metadata_path)
     schedule = settings.load_settings(schedule_path)
-    print(schedule)
+
     schedule["days"] = [forms.days_of_week[int(x)-1] for x in schedule["weekday"].split(";")]
     schedule["hours"] = [f'{int(x):02}:{schedule["minute"]:02}' for x in schedule["hour"].split(";")]
+
+    device_mode = switches.mode()
+    internet = check_internet()
+    
     return render_template("status.html", site=site(), status=locals())
 
 @app.route('/debug-mode', methods=["POST"])
@@ -146,3 +154,10 @@ def config_camera():
 def prepare_form(request, form, source):
     for_form = MultiDict(source)
     return form(request.form or for_form)
+
+def check_internet(url="https://caterpillarscount.unc.edu", timeout=5):
+    try:
+        urllib.request.urlopen(url, timeout=timeout)
+        return True
+    except Exception as e:
+        return False
