@@ -114,7 +114,7 @@ def config_schedule():
 def config_operation():
     schedule_path = settings.find_settings()
     schedule = settings.load_settings(schedule_path)
-
+    old_wifi = (schedule["ssid"], schedule["wifipass"])
     schedule_for_form = MultiDict(schedule)
 
     form = forms.OperationForm(request.form or schedule_for_form)
@@ -123,6 +123,9 @@ def config_operation():
         if form.validate():
             d = dict(form.data)
             d["onlyflash"] = int(d["onlyflash"])
+            new_wifi = (d["ssid"], d["wifipass"])
+            if new_wifi != old_wifi:
+                flash(f'Added wifi for: {d["ssid"]}. You will need to restart the device.', "ok")
             settings.write_settings(schedule_path, d)
             flash("Saved configuration", "ok")
         else:
@@ -161,3 +164,4 @@ def check_internet(url="https://caterpillarscount.unc.edu", timeout=5):
         return True
     except Exception as e:
         return False
+
