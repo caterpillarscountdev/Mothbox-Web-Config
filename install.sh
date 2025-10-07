@@ -54,9 +54,9 @@ sudo echo 'pi,www-data ALL=(ALL) NOPASSWD:/usr/bin/systemctl' | sudo EDITOR='tee
 
 
 # Allow apache to write config files
-chmod +w /home/pi/Desktop/Mothbox/controls.txt
-chmod +w /home/pi/Desktop/Mothbox/schedule_settings.csv
-chmod +w /home/pi/Desktop/Mothbox/camera_settings.csv
-chmod +w /home/pi/Desktop/Mothbox/site_metadata.csv
+chmod a+w /home/pi/Desktop/Mothbox/controls.txt
+chmod a+w /home/pi/Desktop/Mothbox/schedule_settings.csv
+chmod a+w /home/pi/Desktop/Mothbox/camera_settings.csv
+chmod a+w /home/pi/Desktop/Mothbox/site_metadata.csv
 # And read GPIO
 sudo usermod -a -G gpio www-data

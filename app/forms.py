@@ -50,6 +50,6 @@ class SiteForm(Form):
     LandingSheet = SelectField("Landing Sheet Dimensions",
                                choices = ["12x16", "8x12"])
     AttractorType = SelectField("Attractor Type",
-                               choices = ["2.0a", "2.0b"])
+                               choices = ["UV Strip 2.0a", "UV Strip 2.0b"])
     ScaleBarPresent = BooleanField("Scale Bar Present?")
     ColorStandardPresent = BooleanField("Color Standard Present?")
