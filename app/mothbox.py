@@ -164,7 +164,7 @@ def update_code():
         flash(f"Code update failed: {e}", "error")
     else:
         if result.returncode == 0:
-            flash(f"Code updated: {result.stdout.strip().decode('utf-8')}", "ok")
+            flash(f"Code updated", "ok")
         else:
             flash(f"Code update failed: {result.stderr.strip().decode('utf-8')}", "error")
     return redirect(url_for('status'))
