@@ -161,7 +161,7 @@ def config_camera():
 @app.route("/update-code", methods=["POST"])
 def update_code():
     try:
-        result = subprocess.run(["/home/pi/Desktop/Mothbox/Web/gitupdate.sh"], cwd=here, capture_output=True)
+        result = subprocess.run(["sudo", "-u", "pi", "/home/pi/Desktop/Mothbox/Web/gitupdate.sh"], capture_output=True)
     except FileNotFoundError as e:
         flash(f"Code update failed: {e}", "error")
     else:
@@ -187,6 +187,6 @@ def check_internet(url="https://caterpillarscount.unc.edu", timeout=5):
     
 def check_for_updates():
     uptodate = os.path.normpath(os.path.join(here, "../", "uptodate.sh"))
-    output = subprocess.run([uptodate], cwd=here, capture_output=True)
+    output = subprocess.run(["sudo", "-u", "pi", uptodate], capture_output=True)
     return output.stdout.strip().decode("utf-8")
 

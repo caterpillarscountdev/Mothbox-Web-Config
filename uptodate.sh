@@ -1,5 +1,6 @@
 #!/bin/sh
 
+cd /home/pi/Desktop/Mothbox/Web
 git remote update > /dev/null
 
 
