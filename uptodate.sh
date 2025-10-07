@@ -2,7 +2,6 @@
 
 git remote update > /dev/null
 
-
 UPSTREAM=${1:-'@{u}'}
 LOCAL=$(git rev-parse @)
 REMOTE=$(git rev-parse "$UPSTREAM")
