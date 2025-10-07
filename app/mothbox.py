@@ -20,6 +20,8 @@ app = Flask(__name__)
 app.secret_key = 'notverysecretindev'
 
 
+here = os.path.dirname(os.path.realpath(__file__))
+
 metadata_path = settings.find_settings('site_metadata.csv')
 camera_path = settings.find_settings('camera_settings.csv')
 schedule_path = settings.find_settings()
@@ -159,7 +161,7 @@ def config_camera():
 @app.route("/update-code", methods=["POST"])
 def update_code():
     try:
-        result = subprocess.run(["/home/pi/Desktop/Mothbox/Web/gitupdate.sh"], capture_output=True)
+        result = subprocess.run(["/home/pi/Desktop/Mothbox/Web/gitupdate.sh"], cwd=here, capture_output=True)
     except FileNotFoundError as e:
         flash(f"Code update failed: {e}", "error")
     else:
@@ -184,8 +186,7 @@ def check_internet(url="https://caterpillarscount.unc.edu", timeout=5):
 
     
 def check_for_updates():
-    here = os.path.dirname(os.path.realpath(__file__))
     uptodate = os.path.normpath(os.path.join(here, "../", "uptodate.sh"))
-    output = subprocess.run([uptodate], capture_output=True)
+    output = subprocess.run([uptodate], cwd=here, capture_output=True)
     return output.stdout.strip().decode("utf-8")
 
