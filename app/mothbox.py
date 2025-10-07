@@ -186,6 +186,6 @@ def check_internet(url="https://caterpillarscount.unc.edu", timeout=5):
 def check_for_updates():
     here = os.path.dirname(os.path.realpath(__file__))
     uptodate = os.path.normpath(os.path.join(here, "../", "uptodate.sh"))
-    status = subprocess.run([uptodate], capture_output=True)
-    return status.stdout.strip().decode("utf-8")
+    output = subprocess.run([uptodate], capture_output=True)
+    return output.stdout.strip().decode("utf-8")
 

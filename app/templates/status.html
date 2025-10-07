@@ -7,7 +7,7 @@
 <h2>Status</h2>
 
 <div class="status">
-  <p>This Mothbox has the name <em class="status-label">{{ status.controls.name }}</em> running software version <em class="status-label">{{ status.controls.softwareversion }}</em> and this config software has <em class="status-label">{{ status.updates}}</em></p>
+  <p>This Mothbox has the name <em class="status-label">{{ status.controls.name }}</em> running software version <em class="status-label">{{ status.controls.softwareversion }}</em> and this config software has <em class="status-label">{{ status.updates }}</em></p>
   <p>It is assigned to the site <em class="status-label">{{ status.metadata.SiteName or "(No Site Assigned)"}}</em></p>
   <p>Mode switch is <em class="status-label">{{status.device_mode}}</em> and the internet is <em class="status-label">{% if status.internet %}Connected{% else %}Offline{%endif %}</em></p>
   <p>It is scheduled to operate on <em class="status-label">{{ ", ".join(status.schedule.days)}}</em> at <em class="status-label">{{ ", ".join(status.schedule.hours)}}</em> for <em class="status-label">{{status.schedule.runtime}}</em> minutes.</p>
