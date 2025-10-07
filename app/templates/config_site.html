@@ -34,6 +34,13 @@
     <div class="moveMapLabel">Move the pin or double-click the deployed location.</div>
     <div id="map" class="latlonMap"><div id="map-canvas"></div></div>
   </fieldset>
+  <fieldset>
+    <label>Device Setup</label>
+    {{ render_field(form.LandingSheet) }}
+    {{ render_field(form.AttractorType) }}
+    <div class="flex">{{ render_field(form.ScaleBarPresent) }}</div>
+    <div class="flex"{{ render_field(form.ColorStandardPresent) }}</div>
+  </fieldset>
   
   <input class="save" type="submit" value="Save" />
   

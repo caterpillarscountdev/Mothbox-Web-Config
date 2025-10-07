@@ -47,4 +47,9 @@ class SiteForm(Form):
     SiteCrew = StringField("Site Host")
     SiteLat = FloatField("Lat.", render_kw={"size": 7})
     SiteLon = FloatField("Lon.", render_kw={"size": 7})
-    
+    LandingSheet = SelectField("Landing Sheet Dimensions",
+                               choices = ["12x16", "8x12"])
+    AttractorType = SelectField("Attractor Type",
+                               choices = ["2.0a", "2.0b"])
+    ScaleBarPresent = BooleanField("Scale Bar Present?")
+    ColorStandardPresent = BooleanField("Color Standard Present?")
