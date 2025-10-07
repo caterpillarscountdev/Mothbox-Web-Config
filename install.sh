@@ -36,6 +36,8 @@ virtualenv .venv
 . .venv/bin/activate
 pip install -r requirements.txt
 
+cp site_metadata.csv ../
+
 openssl req -x509 -out localssl.pem -keyout localssl.key   -newkey rsa:2048 -nodes -sha256  -subj '/CN=mothbox.local' -extensions EXT -config <( printf "[dn]\nCN=mothbox.local\n[req]\ndistinguished_name = dn\n[EXT]\nsubjectAltName=DNS:mothbox.local\nkeyUsage=digitalSignature\nextendedKeyUsage=serverAuth")
 
 sudo mv localssl.pem /etc/ssl/certs/
@@ -55,5 +57,6 @@ sudo echo 'pi,www-data ALL=(ALL) NOPASSWD:/usr/bin/systemctl' | sudo EDITOR='tee
 chmod +w /home/pi/Desktop/Mothbox/controls.txt
 chmod +w /home/pi/Desktop/Mothbox/schedule_settings.csv
 chmod +w /home/pi/Desktop/Mothbox/camera_settings.csv
+chmod +w /home/pi/Desktop/Mothbox/site_metadata.csv
 # And read GPIO
 sudo usermod -a -G gpio www-data
