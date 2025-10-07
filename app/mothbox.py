@@ -3,6 +3,7 @@ from flask import Flask, request, flash, render_template, url_for, redirect, abo
 from werkzeug.datastructures import MultiDict
 
 import subprocess
+import os.path
 import urllib.request
 
 
@@ -57,6 +58,7 @@ def status():
 
     device_mode = switches.mode()
     internet = check_internet()
+    updates = check_for_updates()
     
     return render_template("status.html", site=site(), status=locals())
 
@@ -154,6 +156,21 @@ def config_camera():
     return render_template("config_camera.html", site=site(), form=form)
 
 
+@app.route("/update-code", methods=["POST"])
+def update_code():
+    try:
+        result = subprocess.run(["/home/pi/Desktop/Mothbox/Web/gitupdate.sh"], capture_output=True)
+    except FileNotFoundError as e:
+        flash(f"Code update failed: {e}", "error")
+    else:
+        if result.returncode == 0:
+            flash(f"Code updated: {result.stdout.strip().decode('utf-8')}", "ok")
+        else:
+            flash(f"Code update failed: {result.stderr.strip().decode('utf-8')}", "error")
+    return redirect(url_for('status'))
+    
+
+
 def prepare_form(request, form, source):
     for_form = MultiDict(source)
     return form(request.form or for_form)
@@ -164,4 +181,11 @@ def check_internet(url="https://caterpillarscount.unc.edu", timeout=5):
         return True
     except Exception as e:
         return False
+
+    
+def check_for_updates():
+    here = os.path.dirname(os.path.realpath(__file__))
+    uptodate = os.path.normpath(os.path.join(here, "../", "uptodate.sh"))
+    status = subprocess.run([uptodate], capture_output=True)
+    return status.stdout.strip().decode("utf-8")
 
