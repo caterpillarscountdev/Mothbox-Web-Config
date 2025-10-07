@@ -9,6 +9,7 @@
  
 </script>
 <script src="/static/js/map-lat-lon.js"></script>
+<script src="/static/js/site-manage.js"></script>
 
 {% endblock %}
 
@@ -19,14 +20,19 @@
 <form name="config" autocomplete="off" method="POST">
   <fieldset>
     <label>Deployment Metadata</label>
-    {{ render_field(form.SiteName) }}
-    <div class="moveMapLabel">Move the pin or double-click the deployed location.</div>
-    <div id="map" class="latlonMap"><div id="map-canvas"></div></div>
+    <div id="siteName" data-name="{{form.SiteName.data}}" data-crew="{{form.SiteCrew.data}}">
+      {{ render_field(form.SiteName) }}
+      {{ render_field(form.SiteCrew) }}
+    </div>
+  </fieldset>
+  <fieldset>
+    <label>Deployment Location</label>
     <div class="flex">
       {{ render_field(form.SiteLat) }}
       {{ render_field(form.SiteLon) }}
     </div>
-    {{ render_field(form.SiteCrew) }}
+    <div class="moveMapLabel">Move the pin or double-click the deployed location.</div>
+    <div id="map" class="latlonMap"><div id="map-canvas"></div></div>
   </fieldset>
   
   <input class="save" type="submit" value="Save" />

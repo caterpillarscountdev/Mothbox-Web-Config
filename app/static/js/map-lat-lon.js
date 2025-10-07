@@ -149,8 +149,6 @@ async function setMarker() {
   });
   
   let moved = (event) => {
-    mapEl.dataset.lat =  marker.position.lat;
-    mapEl.dataset.lng = marker.position.lng;
     updateForm(marker.position.lat, marker.position.lng)
     map.panTo(marker.position);
   }

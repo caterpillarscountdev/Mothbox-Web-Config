@@ -44,7 +44,7 @@ class CameraForm(Form):
 
 class SiteForm(Form):
     SiteName = StringField("Site Name")
+    SiteCrew = StringField("Site Host")
     SiteLat = FloatField("Lat.", render_kw={"size": 7})
     SiteLon = FloatField("Lon.", render_kw={"size": 7})
-    SiteCrew = StringField("Site Crew/Host")
     
