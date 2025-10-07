@@ -26,7 +26,7 @@ def pin_connected_to_ground(pin):
             config={
                 pin: gpiod.LineSettings(
                     direction=gpiod.line.Direction.INPUT,
-                    bias=gpiiod.line.Bias.PULL_UP,
+                    bias=gpiod.line.Bias.PULL_UP,
                     active_low=True
                 )
             },
