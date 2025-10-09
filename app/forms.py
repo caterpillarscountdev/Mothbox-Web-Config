@@ -48,7 +48,7 @@ class SiteForm(Form):
     SiteLat = FloatField("Lat.", render_kw={"size": 7})
     SiteLon = FloatField("Lon.", render_kw={"size": 7})
     LandingSheet = SelectField("Landing Sheet Dimensions",
-                               choices = ["12x16", "8x12"])
+                               choices = ["12x16 in", "8x12 in"])
     AttractorType = SelectField("Attractor Type",
                                choices = ["UV Strip 2.0a", "UV Strip 2.0b"])
     ScaleBarPresent = BooleanField("Scale Bar Present?")
