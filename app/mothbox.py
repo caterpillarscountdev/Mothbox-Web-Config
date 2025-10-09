@@ -34,6 +34,8 @@ def site():
             "logo": "/assets/images/logos/",
             "nav_pages": [
                 {"url": url_for("status"), "title": "Status"},
+                {"url": url_for("test_device"), "title": "Testing"},
+                {"url": url_for("data"), "title": "Data Upload"},
                 {"category": "Config",
                  "pages": [
                      {"url": url_for("config_site"), "title": "Site"},
@@ -73,6 +75,14 @@ def debug_mode():
     else:
         flash("Debug mode enabled", "ok")
     return redirect(url_for('status'))
+
+@app.route('/testing')
+def test_device():
+    return render_template("test_device.html", site=site())
+
+@app.route('/data')
+def data():
+    return render_template("data_upload.html", site=site())
 
 @app.route("/config/site", methods=["GET", "POST"])
 def config_site():
