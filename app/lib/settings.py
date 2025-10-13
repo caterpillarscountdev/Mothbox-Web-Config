@@ -8,7 +8,7 @@ def relative_file(path):
         return os.path.join(PI_PATH, path)
 
     here = os.path.dirname(os.path.realpath(__file__))
-    return os.path.normpath(os.path.join(here, "../", path))
+    return os.path.normpath(os.path.join(here, "../../", path))
 
 def find_file(path, filename, depth=1):
     """

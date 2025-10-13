@@ -7,14 +7,8 @@ import os.path
 import urllib.request
 
 
-try:
-    import settings
-    import forms
-    import switches
-except ImportError:
-    from . import settings
-    from . import forms
-    from . import switches
+from app.lib import settings, switches
+from app import forms
 
 app = Flask(__name__)
 app.secret_key = 'notverysecretindev'
