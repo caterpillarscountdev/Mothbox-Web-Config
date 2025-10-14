@@ -14,7 +14,11 @@
   <div></div>
 </div>
 <div>
-  <button class="action" hx-post="{{url_for('test_device', device='flash')}}">Test Flash</button>
+  <button class="action"
+          hx-post="{{url_for('test_device', device='flash')}}"
+          hx-target="next div"
+  >Test Flash</button>
+  <div></div>
 </div>
 <div>
   <button class="action" hx-post="{{url_for('test_device', device='camera')}}">Test Camera</button>
