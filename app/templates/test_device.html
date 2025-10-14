@@ -6,14 +6,18 @@
 
 <h2>Test Device</h2>
 
-<form method="POST" action="">
-  <input type="submit" class="save" value="Test Attract" />
-</form>
-<form method="POST" action="">
-              <input type="submit" class="save" value="Test Flash" />
-</form>
-<form method="POST" action="">
-              <input type="submit" class="save" value="Take Test Photo" />
-</form>
+<div>
+  <button class="action"
+          hx-post="{{url_for('test_device', device='attract')}}"
+          hx-target="next div"
+  >Test Attract</button>
+  <div></div>
+</div>
+<div>
+  <button class="action" hx-post="{{url_for('test_device', device='flash')}}">Test Flash</button>
+</div>
+<div>
+  <button class="action" hx-post="{{url_for('test_device', device='camera')}}">Test Camera</button>
+</div>
 
 {% endblock %}

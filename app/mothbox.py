@@ -7,7 +7,7 @@ import os.path
 import urllib.request
 
 
-from app.lib import settings, switches
+from app.lib import settings, switches, testing
 from app import forms
 
 app = Flask(__name__)
@@ -70,9 +70,30 @@ def debug_mode():
         flash("Debug mode enabled", "ok")
     return redirect(url_for('status'))
 
-@app.route('/testing')
-def test_device():
-    return render_template("test_device.html", site=site())
+@app.route('/testing', defaults={"device": None})
+@app.route('/testing/<device>', methods=["POST"])
+def test_device(device):
+    match device:
+        case "attract":
+            if testing.attract_state():
+                testing.attract_off()
+                return "Turned off."
+            else:
+                testing.attract_on()
+                return "Did the UV light turn on? Click again to turn off."
+        case "flash":
+            if testing.flash_state():
+                testing.flash_off()
+                return "Turned off."
+            else:
+                testing.flash_on()
+                return "Did Flash turn on? Click again to turn off."
+        case "camera":
+            pass
+        case None:
+            return render_template("test_device.html", site=site())
+        case _:
+            return "OK"
 
 @app.route('/data')
 def data():

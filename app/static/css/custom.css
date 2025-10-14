@@ -96,14 +96,14 @@ form dd {
     padding-right: 2rem;
 }
 
-form .save, form button {
+form .save, button {
     background-color: #aaf;
     padding: 0.5rem;
     border: 1px solid #339;
     border-radius: 0.5rem;
 }
 
-form .save {
+form .save, button.action {
     margin-top: 2rem;
     margin-right: 1rem;
 }
