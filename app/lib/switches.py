@@ -19,15 +19,13 @@ if gpiod:
     )
     
     RELAY_IN_LINE_SETTING = gpiod.LineSettings(
-        direction=gpiod.line.Direction.OUTPUT,
-        bias=gpiod.line.Bias.AS_IS,
+        direction=gpiod.line.Direction.AS_IS,
         active_low=True
     )
     
 
     RELAY_OUT_LINE_SETTING = gpiod.LineSettings(
         direction=gpiod.line.Direction.OUTPUT,
-        bias=gpiod.line.Bias.AS_IS,
         active_low=True
     )
     
@@ -63,7 +61,7 @@ def pin_relay_state(pin):
     ) as request:
         return request.get_value(pin)
 
-def pin_relay_set(pin, value):
+def pin_relay_set(pin, on):
     if not gpiod:
         return 'NOT_PI_DEVICE'
     with gpiod.request_lines(
@@ -72,5 +70,9 @@ def pin_relay_set(pin, value):
                 pin: RELAY_OUT_LINE_SETTING
             },
     ) as request:
+        if on:
+            value = gpiod.line.Value.ACTIVE
+        else:
+            value = gpiod.line.Value.INACTIVE
         return request.set_value(pin, value)
     
