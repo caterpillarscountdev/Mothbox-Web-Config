@@ -27,6 +27,16 @@ sudo bash -c 'cat > /etc/apache2/sites-available/001-mothbox.conf <<EOF
 
 EOF'
 
+sudo bash -c 'cat > /var/logrotate.d/mothbox <<EOF
+/home/pi/Desktop/Mothbox/logs/*.txt
+{
+    su pi pi
+    weekly
+    missingok
+    rotate 4
+}
+EOF'
+
 chmod +x /home/pi
 sudo a2ensite 001-mothbox
 sudo a2enmod ssl
@@ -47,6 +57,7 @@ sudo systemctl restart apache2
 
 # Let users turn on debug mode without requiring sudo password
 sudo echo 'pi,www-data ALL=(ALL) NOPASSWD:/home/pi/Desktop/Mothbox/scripts/MothPower/stop_lowpower.sh' | sudo EDITOR='tee -a' visudo 
+sudo echo 'pi,www-data ALL=(ALL) NOPASSWD:/home/pi/Desktop/Mothbox/scripts/wakeup.sh' | sudo EDITOR='tee -a' visudo 
 # Let apache update code
 sudo echo 'www-data ALL=(pi) NOPASSWD:/home/pi/Desktop/Mothbox/Web/uptodate.sh' | sudo EDITOR='tee -a' visudo 
 sudo echo 'www-data ALL=(pi) NOPASSWD:/home/pi/Desktop/Mothbox/Web/gitupdate.sh' | sudo EDITOR='tee -a' visudo

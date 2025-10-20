@@ -107,3 +107,11 @@ form .save, button.action {
     margin-top: 2rem;
     margin-right: 1rem;
 }
+
+/* Logs */
+
+.log-output {
+    height: 30em;
+    overflow: scroll;
+    font-family: monospace;
+}

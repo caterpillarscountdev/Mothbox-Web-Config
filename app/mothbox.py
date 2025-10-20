@@ -5,6 +5,7 @@ from werkzeug.datastructures import MultiDict
 import subprocess
 import os.path
 import urllib.request
+from datetime import datetime
 
 
 from app.lib import settings, switches, testing
@@ -34,8 +35,9 @@ def site():
                  "pages": [
                      {"url": url_for("config_site"), "title": "Site"},
                      {"url": url_for("config_schedule"), "title": "Schedule"},
-                     {"url": url_for("config_operation"), "title": "Operation"},
-                     {"url": url_for("config_camera"), "title": "Camera"}
+                     {"url": url_for("config_operation"), "title": "Wifi"},
+                     {"url": url_for("config_camera"), "title": "Camera"},
+                     {"url": url_for("logs"), "title": "Logs"}
                 ]}
             ]
         }
@@ -95,6 +97,26 @@ def test_device(device):
         case _:
             return "OK"
 
+@app.route('/logs', defaults={"log": None})
+@app.route('/logs/<log>', methods=["POST"])
+def logs(log):
+    if log:
+        return log_tail(log + "_log.txt")
+    lognames = [
+        "Attract_On",
+        "Backup",
+        "Scheduler",
+        "TakePhoto"
+    ]
+    logs = {}
+    for log in lognames:
+        try:
+            mtime = datetime.fromtimestamp(os.path.getmtime(log_get_path(log)))
+        except FileNotFoundError:
+            mtime = None
+        logs[log] = mtime
+    return render_template("view_logs.html", site=site(), logs=logs)
+        
 @app.route('/data')
 def data():
     return render_template("data_upload.html", site=site())
@@ -215,3 +237,11 @@ def check_for_updates():
     output = subprocess.run(["sudo", "-u", "pi", uptodate], capture_output=True)
     return output.stdout.strip().decode("utf-8")
 
+def log_tail(log):
+    # basename to sanitize input to intended directory
+    path = log_get_path(log)
+    output = subprocess.run(["tail", "-100", path], capture_output=True)
+    return output.stdout.strip().decode("utf-8")
+    
+def log_get_path(log):
+    return os.path.normpath(os.path.join(here, "../../logs/", os.path.basename(log)+"_log.txt"))

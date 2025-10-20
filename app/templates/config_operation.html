@@ -9,11 +9,7 @@
 
 <form name="config" autocomplete="off" method="POST">
   <fieldset>
-    <label>Operation settings</label>
-    {{ render_field(form.onlyflash) }}
-  </fieldset>
-  <fieldset>
-    <label>Connect to wifi?</label>
+    <label>Connect to wifi? If this fails after restart, the wifi hotspot should return in a minute or two.</label>
     {{ render_field(form.ssid) }}
     {{ render_field(form.wifipass) }}
   </fieldset>
