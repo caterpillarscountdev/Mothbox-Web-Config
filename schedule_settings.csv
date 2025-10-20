@@ -10,4 +10,5 @@ runtime, 59, (make it not a full hour if you are doing things hourly) put how lo
 ssid, examplessid, write an SSID of a wifi you want to add to the pi
 wifipass, examplepass, write the wifi password
 onlyflash,0,switch to using only the flash for the attraction by setting to 1
+camera_interval,10,interval between photos
 

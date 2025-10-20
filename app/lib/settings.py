@@ -127,14 +127,21 @@ def write_settings(file_path, settings):
     with open(file_path) as csv_read:
         reader = csv.reader(csv_read)
         rows = list(reader)
-    print(rows)
+    used = []
     with open(file_path, "w") as csv_write:
         headings = ["SETTING", "VALUE", "DETAILS"]
         writer = csv.writer(csv_write, lineterminator="\n", quoting=csv.QUOTE_MINIMAL)
         for row in rows:
             if row and row[0] in settings:
                 row[1] = settings[row[0]]
+                used.append(row[0])
             writer.writerow(row)
+        # and write new values at the end
+        for k,v in settings.items():
+            if k not in used:
+                row = [k, v, '']
+                writer.writerow(row)
+    
         
 
 

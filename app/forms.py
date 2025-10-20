@@ -1,10 +1,9 @@
-from wtforms import Form, BooleanField, StringField, IntegerField, FloatField, SelectField, SelectMultipleField, validators
+from wtforms import Form, validators
+from wtforms import BooleanField, StringField, IntegerField, FloatField, SelectField, SelectMultipleField
 
 days_of_week = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 
 class ScheduleForm(Form):
-    second = IntegerField("Second")
-    minute = IntegerField("Minute")
     hour = SelectMultipleField("Hour(s)",
                                coerce=int,
                                choices = [[x, f'{x:02}:00'] for x in list(range(18,24)) + list(range(18))],
@@ -15,7 +14,9 @@ class ScheduleForm(Form):
                                   render_kw={"size": 7})
 
     utc_off = StringField("UTC Offset")
-    runtime = IntegerField("Runtime")
+    minute = IntegerField("Start Minute")
+    camera_interval = IntegerField("Photo interval (minutes)")
+    runtime = IntegerField("Runtime (minutes)")
 
     
 class OperationForm(Form):
