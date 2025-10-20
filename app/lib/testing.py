@@ -20,3 +20,4 @@ def flash_off():
 
 def camera_take_photo():
     pass
+
