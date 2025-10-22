@@ -1,16 +1,20 @@
 #!/bin/sh
+
+FW_PATH=/home/pi/Desktop/Mothbox
+WEB_PATH=/home/pi/Desktop/Mothbox/Web
+
 case "$1" in
     "pull")
-        cd /home/pi/Desktop/Mothbox/Web
+        cd $WEB_PATH
         git pull
         ./postupdate.sh
 
-        cd /home/pi/Desktop/Mothbox
+        cd $FW_PATH
         git pull
     ;;
     "versions")
-        FIRMWARE=$(cd ../ && git describe)
-        WEB=$(git describe)
+        FIRMWARE=$(cd $FW_PATH && git describe)
+        WEB=$(cd $WEB_PATH && git describe)
         echo "Fw-$FIRMWARE Web-$WEB"
     ;;
     "uptodate")
