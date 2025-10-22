@@ -1,0 +1,19 @@
+{% extends "default.html" %}
+
+{% block title %}View Logs{% endblock %}
+
+{% block content %}
+
+<h2>View Logs</h2>
+
+<div class="flex">
+  {% for log, mtime in logs.items() %}
+  <button class="action"
+          hx-post="{{url_for('logs', log=log)}}"
+          hx-target="div.log-output"
+  >{{log}} {{mtime and mtime.strftime("%Y-%m-%d %H:%M") or "not found"}}</button>
+  {% endfor %}
+</div>
+<div class="log-output"></div>
+
+{% endblock %}
