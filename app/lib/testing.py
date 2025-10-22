@@ -22,7 +22,7 @@ def flash_off():
     return pin_relay_set(pins.flash, 0)
 
 def camera_take_photo():
-    subprocess.Popen(["sudo", "-u", "pi", "/home/pi/Desktop/Mothbox/TakePhoto.py"], stdout=None, stderr=None)
+    subprocess.Popen(["sudo", "-u", "pi", "/home/pi/Desktop/Mothbox/TakePhoto.py"], stdout=None, stderr=None, cwd="/tmp")
     return True
 
 def camera_latest_photo():
