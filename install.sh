@@ -59,7 +59,6 @@ sudo systemctl restart apache2
 sudo echo 'pi,www-data ALL=(ALL) NOPASSWD:/home/pi/Desktop/Mothbox/scripts/MothPower/stop_lowpower.sh' | sudo EDITOR='tee -a' visudo 
 sudo echo 'pi,www-data ALL=(ALL) NOPASSWD:/home/pi/Desktop/Mothbox/scripts/wakeup.sh' | sudo EDITOR='tee -a' visudo 
 # Let apache update code
-sudo echo 'www-data ALL=(pi) NOPASSWD:/home/pi/Desktop/Mothbox/Web/uptodate.sh' | sudo EDITOR='tee -a' visudo 
 sudo echo 'www-data ALL=(pi) NOPASSWD:/home/pi/Desktop/Mothbox/Web/gitupdate.sh' | sudo EDITOR='tee -a' visudo
 sudo echo 'pi,www-data ALL=(ALL) NOPASSWD:/usr/bin/systemctl' | sudo EDITOR='tee -a' visudo 
 

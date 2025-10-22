@@ -59,6 +59,7 @@ def status():
     device_mode = switches.mode()
     internet = check_internet()
     updates = check_for_updates()
+    versions = check_for_versions()
     
     return render_template("status.html", site=site(), status=locals())
 
@@ -208,7 +209,7 @@ def config_camera():
 @app.route("/update-code", methods=["POST"])
 def update_code():
     try:
-        result = subprocess.run(["sudo", "-u", "pi", "/home/pi/Desktop/Mothbox/Web/gitupdate.sh"], capture_output=True)
+        result = subprocess.run(["sudo", "-u", "pi", "/home/pi/Desktop/Mothbox/Web/gitupdate.sh", "pull"], capture_output=True)
     except FileNotFoundError as e:
         flash(f"Code update failed: {e}", "error")
     else:
@@ -233,7 +234,12 @@ def check_internet(url="https://caterpillarscount.unc.edu", timeout=5):
 
     
 def check_for_updates():
-    uptodate = os.path.normpath(os.path.join(here, "../", "uptodate.sh"))
+    uptodate = os.path.normpath(os.path.join(here, "../", "gitupdate.sh", "uptodate"))
+    output = subprocess.run(["sudo", "-u", "pi", uptodate], capture_output=True)
+    return output.stdout.strip().decode("utf-8")
+
+def check_for_versions():
+    uptodate = os.path.normpath(os.path.join(here, "../", "gitupdate.sh", "versions"))
     output = subprocess.run(["sudo", "-u", "pi", uptodate], capture_output=True)
     return output.stdout.strip().decode("utf-8")
 
