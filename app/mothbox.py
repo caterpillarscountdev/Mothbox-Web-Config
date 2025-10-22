@@ -234,13 +234,13 @@ def check_internet(url="https://caterpillarscount.unc.edu", timeout=5):
 
     
 def check_for_updates():
-    uptodate = os.path.normpath(os.path.join(here, "../", "gitupdate.sh", "uptodate"))
-    output = subprocess.run(["sudo", "-u", "pi", uptodate], capture_output=True)
+    uptodate = os.path.normpath(os.path.join(here, "../", "gitupdate.sh"))
+    output = subprocess.run(["sudo", "-u", "pi", uptodate, "uptodate"], capture_output=True)
     return output.stdout.strip().decode("utf-8")
 
 def check_for_versions():
-    uptodate = os.path.normpath(os.path.join(here, "../", "gitupdate.sh", "versions"))
-    output = subprocess.run(["sudo", "-u", "pi", uptodate], capture_output=True)
+    uptodate = os.path.normpath(os.path.join(here, "../", "gitupdate.sh"))
+    output = subprocess.run(["sudo", "-u", "pi", uptodate, "versions"], capture_output=True)
     return output.stdout.strip().decode("utf-8")
 
 def log_tail(log):
