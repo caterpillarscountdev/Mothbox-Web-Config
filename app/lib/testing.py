@@ -1,4 +1,4 @@
-import os
+import subprocess
 
 from .switches import pin_relay_state, pin_relay_set, pins
 from . import datasets
@@ -22,7 +22,7 @@ def flash_off():
     return pin_relay_set(pins.flash, 0)
 
 def camera_take_photo():
-    os.system(" ".join(["sudo", "-u", "pi", "/home/pi/Desktop/Mothbox/TakePhoto.py", "&"]))
+    subprocess.Popen(["sudo", "-u", "pi", "/home/pi/Desktop/Mothbox/TakePhoto.py"], stdout=None, stderr=None)
     return True
 
 def camera_latest_photo():
