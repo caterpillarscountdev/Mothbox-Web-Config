@@ -101,7 +101,7 @@ def test_device(device):
 @app.route('/logs/<log>', methods=["POST"])
 def logs(log):
     if log:
-        return log_tail(log + "_log.txt")
+        return f'<pre>{log_tail(log)}</pre>'
     lognames = [
         "Attract_On",
         "Backup",
