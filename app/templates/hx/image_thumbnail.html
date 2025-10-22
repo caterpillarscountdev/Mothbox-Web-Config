@@ -1,0 +1,2 @@
+<p>Latest Photo: <a href="{{ url_for('serve_photo_media', name=photo) }}">{{photo}}</a>
+<img src="{{ photo|thumbnail('400') }}">

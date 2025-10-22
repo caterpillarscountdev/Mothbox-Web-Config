@@ -21,7 +21,14 @@
   <div></div>
 </div>
 <div>
-  <button class="action" hx-post="{{url_for('test_device', device='camera')}}">Test Camera</button>
+  <button class="action"
+          hx-post="{{url_for('test_device', device='camera')}}"
+          hx-target="next div"
+  >Test Camera</button>
+  <div></div>
+  <div hx-post="{{url_for('test_device', device='photo')}}"
+       hx-trigger="every 5s"
+  ></div>
 </div>
 
 {% endblock %}

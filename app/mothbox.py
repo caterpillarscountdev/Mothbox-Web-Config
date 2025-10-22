@@ -1,4 +1,5 @@
-from flask import Flask, request, flash, render_template, url_for, redirect, abort
+from flask import Flask, request, flash, render_template, url_for, redirect, abort, send_from_directory
+from flask_thumbnails import Thumbnail
 
 from werkzeug.datastructures import MultiDict
 
@@ -8,7 +9,7 @@ import urllib.request
 from datetime import datetime
 
 
-from app.lib import settings, switches, testing
+from app.lib import settings, switches, testing, datasets
 from app import forms
 
 app = Flask(__name__)
@@ -20,6 +21,12 @@ here = os.path.dirname(os.path.realpath(__file__))
 metadata_path = settings.find_settings('site_metadata.csv')
 camera_path = settings.find_settings('camera_settings.csv')
 schedule_path = settings.find_settings()
+
+thumbs = Thumbnail(app)
+app.config['THUMBNAIL_MEDIA_ROOT'] = datasets.PHOTOS_ROOT
+app.config['THUMBNAIL_MEDIA_URL'] = '/media/'
+app.config['THUMBNAIL_MEDIA_THUMBNAIL_ROOT'] = datasets.THUMBS_ROOT
+app.config['THUMBNAIL_MEDIA_THUMBNAIL_URL'] = '/media/thumbnails/'
 
 
 def site():
@@ -92,7 +99,14 @@ def test_device(device):
                 testing.flash_on()
                 return "Did Flash turn on? Click again to turn off."
         case "camera":
-            pass
+            testing.camera_take_photo()
+            return "Camera is taking a photo if lights and flash turn on soon."
+        case "photo":
+            photo = testing.camera_latest_photo()
+            if photo:
+                return render_template("hx/image_thumbnail.html", photo=photo)
+            else:
+                return "No photos"
         case None:
             return render_template("test_device.html", site=site())
         case _:
@@ -218,7 +232,14 @@ def update_code():
         else:
             flash(f"Code update failed: {result.stderr.strip().decode('utf-8')}", "error")
     return redirect(url_for('status'))
-    
+
+@app.route("/media/<path:name>")
+def serve_photo_media(name):
+    folder = app.config['THUMBNAIL_MEDIA_ROOT']
+    if name.startswith("thumbnails/"):
+        name = name.replace("thumbnails/", "")
+        folder = app.config['THUMBNAIL_MEDIA_THUMBNAIL_ROOT']
+    return send_from_directory(folder, name)
 
 
 def prepare_form(request, form, source):
