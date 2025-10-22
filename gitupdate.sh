@@ -3,6 +3,27 @@
 FW_PATH=/home/pi/Desktop/Mothbox
 WEB_PATH=/home/pi/Desktop/Mothbox/Web
 
+uptodate() {
+    cd $WEB_PATH
+    git remote update > /dev/null
+    
+    
+    UPSTREAM=${1:-'@{u}'}
+    LOCAL=$(git rev-parse @)
+    REMOTE=$(git rev-parse "$UPSTREAM")
+    BASE=$(git merge-base @ "$UPSTREAM")
+    
+    if [ $LOCAL = $REMOTE ]; then
+        echo "Latest Updates"
+    elif [ $LOCAL = $BASE ]; then
+        echo "Update Available"
+    elif [ $REMOTE = $BASE ]; then
+        echo "Local Changes"
+    else
+        echo "Diverged"
+    fi
+}
+
 case "$1" in
     "pull")
         cd $WEB_PATH
@@ -18,24 +39,7 @@ case "$1" in
         echo "Fw-$FIRMWARE Web-$WEB"
     ;;
     "uptodate")
-        cd /home/pi/Desktop/Mothbox/Web
-        git remote update > /dev/null
-
-
-        UPSTREAM=${1:-'@{u}'}
-        LOCAL=$(git rev-parse @)
-        REMOTE=$(git rev-parse "$UPSTREAM")
-        BASE=$(git merge-base @ "$UPSTREAM")
-
-        if [ $LOCAL = $REMOTE ]; then
-            echo "Latest Updates"
-        elif [ $LOCAL = $BASE ]; then
-            echo "Update Available"
-        elif [ $REMOTE = $BASE ]; then
-            echo "Local Changes"
-        else
-            echo "Diverged"
-        fi
+        uptodate
     ;;
     *)
         echo "no command; did you mean versions or uptodate?"
