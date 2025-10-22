@@ -10,6 +10,7 @@
   {% for log, mtime in logs.items() %}
   <button class="action"
           hx-post="{{url_for('logs', log=log)}}"
+          hx-on:htmx:after-settle="event.detail.target.scrollIntoView(false)"
           hx-target="div.log-output"
   >{{log}} {{mtime and mtime.strftime("%Y-%m-%d %H:%M") or "not found"}}</button>
   {% endfor %}
