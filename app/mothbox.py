@@ -137,6 +137,12 @@ def data():
     sets = datasets.get_datasets()
     return render_template("data_upload.html", site=site(), data=locals())
 
+@app.route('/data/gallery/<dir>')
+def data_gallery(dir):
+    set = datasets.Dataset(dir)
+    return render_template("hx/data_gallery.html", photos = set.photos(), width='200')
+
+
 @app.route("/config/site", methods=["GET", "POST"])
 def config_site():
     metadata = settings.load_settings(metadata_path)

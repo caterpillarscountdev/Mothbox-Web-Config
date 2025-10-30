@@ -8,13 +8,11 @@
 {% for d in data.sets %}
 <section class="boxed">
   {% set photos = d.photos() %}
-  {% set width = '200' %}
   <h2>{{d.dir}} ({{photos|length}} photos)</h2>
-  <p>Not uploaded</p>
-  <div class="flex-gallery">
-    {% for photo in photos %}
-    {% include "hx/image_thumbnail.html" %}
-    {% endfor %}
+  <p>Not uploaded.
+  </p>
+  <div>
+    <button hx-get="{{url_for('data_gallery', dir=d.dir)}}" hx-target="closest div">Show images</button>
   </div>
 </section>
 {% endfor %}
