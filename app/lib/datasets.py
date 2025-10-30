@@ -14,4 +14,4 @@ class Dataset:
         
 
 def get_datasets():
-    return [ Dataset(d) for d in sorted(os.listdir(PHOTOS_ROOT))]
+    return [ Dataset(d) for d in sorted(os.listdir(PHOTOS_ROOT), reverse=True)]
