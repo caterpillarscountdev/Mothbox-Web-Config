@@ -1,5 +1,20 @@
+:root {
+    --gallery-per-row: 5;
+    --error-color: #933;
+}
+
 .flex {
     display: flex;
+}
+
+.flex-gallery {
+    display: flex;
+    flex-wrap: wrap;
+    height: 300px;
+    overflow: scroll;
+}
+.flex-gallery > * {
+    flex: 0 0 calc(100% / var(--gallery-per-row));
 }
 
 .nav-list .nav-list .nav-list-item {
@@ -11,6 +26,8 @@
     padding: 0 0.4rem 0 0.4rem;
     border-radius: 0.2rem;
 }
+
+
 
 /* Flash messages */
 
@@ -29,7 +46,7 @@ ul.flashes li.ok {
     background-color: #393;
 }
 ul.flashes li.error {
-    background-color: #933;
+    background-color: var(--error-color);
 }
 
 /* Maps */
@@ -85,7 +102,7 @@ form fieldset>label {
 }
 
 ul.errors {
-    color: #933;
+    color: var(--error-color);
 }
 
 form dt.form-label {

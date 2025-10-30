@@ -104,7 +104,7 @@ def test_device(device):
         case "photo":
             photo = testing.camera_latest_photo()
             if photo:
-                return render_template("hx/image_thumbnail.html", photo=photo)
+                return render_template("hx/latest_photo.html", photo=photo)
             else:
                 return "No photos"
         case None:
@@ -134,7 +134,8 @@ def logs(log):
         
 @app.route('/data')
 def data():
-    return render_template("data_upload.html", site=site())
+    sets = datasets.get_datasets()
+    return render_template("data_upload.html", site=site(), data=locals())
 
 @app.route("/config/site", methods=["GET", "POST"])
 def config_site():

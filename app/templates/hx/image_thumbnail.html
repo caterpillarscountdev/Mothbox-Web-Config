@@ -1,2 +1,3 @@
-<p>Latest Photo: <a href="{{ url_for('serve_photo_media', name=photo) }}">{{photo}}</a>
-<img src="{{ photo|thumbnail('400') }}">
+<a href="{{ url_for('serve_photo_media', name=photo) }}">
+  <img src="{{ photo|thumbnail(width|default('400')) }}">
+</a>
