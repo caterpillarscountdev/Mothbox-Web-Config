@@ -27,6 +27,23 @@
     border-radius: 0.2rem;
 }
 
+.htmx-indicator {
+    vertical-align: middle;
+    height: 1em;
+    position: absolute;
+    opacity: 0;
+    transition: visibility 1s 1s, opacity: 1s 1s;
+}
+.htmx-request .htmx-indicator{
+    position: relative;
+    visibility: 1;
+    opacity: 1;
+}
+.htmx-request.htmx-indicator{
+    position: relative;
+    visibility: 1;
+    opacity: 1
+}
 
 
 /* Flash messages */

@@ -12,7 +12,7 @@
   <p>Not uploaded.
   </p>
   <div>
-    <button hx-get="{{url_for('data_gallery', dir=d.dir)}}" hx-target="closest div">Show images</button>
+    <button hx-get="{{url_for('data_gallery', dir=d.dir)}}" hx-target="closest div">Show images {{indicator()}} </button>
   </div>
 </section>
 {% endfor %}
