@@ -209,7 +209,7 @@ def config_operation():
             flash("Validation error", "error")
     return render_template("config_operation.html", site=site(), form=form,
                            current_connections=wifi.current_connections(),
-                           wifi_networks=wifi.wifi_networks(ifname="wlp58s0"))
+                           wifi_networks=wifi.wifi_networks())
 
 @app.route("/config/camera", methods=["GET", "POST"])
 def config_camera():
