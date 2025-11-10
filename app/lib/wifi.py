@@ -15,7 +15,7 @@ def wifi_devices():
 
 def wifi_networks(ifname="wlan1"):
     try:
-        result = subprocess.check_output(["sudo", "nmcli", "--colors", "no", "-g", "ssid,bars", "device", "wifi", "list", "--rescan", "yes", "ifname", ifname], text=True)
+        result = subprocess.check_output(["sudo", "nmcli", "--colors", "no", "-g", "ssid,bars", "device", "wifi", "list", "--rescan", "yes", "ifname", ifname], text=True, env={"TERM": "xterm"})
         return {s:b for s,b in [k.split(':') for k in result.splitlines() if k] if s}
     except subprocess.CalledProcessError as e:
         print(e)
