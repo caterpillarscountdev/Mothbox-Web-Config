@@ -29,5 +29,5 @@ def camera_latest_photo():
     attract_off()
     sets = datasets.get_datasets()
     if sets:
-        return sets[-1].photos()[-1]
+        return sets[0].photos()[-1]
     return None

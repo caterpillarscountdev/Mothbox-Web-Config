@@ -34,7 +34,7 @@ def connect(ssid, password, ifname="wlan1"):
             cmd.extend(["password", password])
         if ifname:
             cmd.extend(["ifname", ifname])
-        result = subprocess.run(cmd, text=True)
+        result = subprocess.run(cmd, text=True, capture_output=True)
         if result.returncode == 0:
             return True
         else:

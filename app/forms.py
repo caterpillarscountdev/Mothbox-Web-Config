@@ -27,14 +27,14 @@ class OperationForm(Form):
 
     
 class CameraForm(Form):
-    LensPosition = StringField("Lens Position")
+    #LensPosition = StringField("Lens Position")
+    #ExposureTime = IntegerField("Exposure Time (microseonds)")
+    #AnalogueGain = StringField("Analogue Gain (1.0 to 16.0)")
+    #AfMode = SelectField("AF Mode", choices = [[0, "Manual"], [1, "Auto"], [2, "Continuous"]])
+    #AfSpeed = SelectField("AF Speed", choices = [[0, "Normal"], [1, "Fast"]])
+    #AfRange = SelectField("AF Range", choices = [[0, "Normal"], [1, "Macro"], [2, "Full"]])
+    #AwbEnable = BooleanField("AWB Enable")
     ExposureValue = StringField("Exposure Value (-8.0 to 8.0)")
-    ExposureTime = IntegerField("Exposure Time (microseonds)")
-    AnalogueGain = StringField("Analogue Gain (1.0 to 16.0)")
-    AfMode = SelectField("AF Mode", choices = [[0, "Manual"], [1, "Auto"], [2, "Continuous"]])
-    AfSpeed = SelectField("AF Speed", choices = [[0, "Normal"], [1, "Fast"]])
-    AfRange = SelectField("AF Range", choices = [[0, "Normal"], [1, "Macro"], [2, "Full"]])
-    AwbEnable = BooleanField("AWB Enable")
     HDR = SelectField("HDR", choices = [[1, "Off"], [3, "3 Photos"]])
     HDR_width = StringField("HDR exposure shift duration")
     AutoCalibration = BooleanField("Auto Calibration")
