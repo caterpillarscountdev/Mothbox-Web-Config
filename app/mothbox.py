@@ -208,6 +208,7 @@ def config_operation():
         else:
             flash("Validation error", "error")
     return render_template("config_operation.html", site=site(), form=form,
+                           wifi_devices=wifi.wifi_devices(),
                            current_connections=wifi.current_connections(),
                            wifi_networks=wifi.wifi_networks())
 
