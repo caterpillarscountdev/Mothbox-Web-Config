@@ -1,7 +1,7 @@
 {% extends "default.html" %}
 {% from "_forms.html" import render_field %}
 
-{% block title %}Operating Configuration{% endblock %}
+{% block title %}Wifi Configuration{% endblock %}
 
 {% block content %}
 
@@ -9,9 +9,24 @@
 
 <form name="config" autocomplete="off" method="POST">
   <fieldset>
-    <label>Connect to wifi? If this fails after restart, the wifi hotspot should return in a minute or two.</label>
+    <label>
+      Connect to wifi.
+    </label>
+    <p>
+      {% if wifi_devices|length > 1 %}
+      Using secondary wifi, will apply immediately and not disconnect primary.
+      {% else %}
+      Only one wifi device available, so won't attempt to connect until reboot.
+      {% endif %}
+    </p>
+    <p>Currently connected to: {% for d,s in current_connections.items()%}{{s}} (on {{d}}) {%endfor%}</p>
     {{ render_field(form.ssid) }}
     {{ render_field(form.wifipass) }}
+    <datalist id="ssid_list">
+      {% for s,b in wifi_networks.items() %}
+      <option value="{{s}}" label="{{s}} {{b}}"></option>
+      {% endfor %}
+    </datalist>
   </fieldset>
   
   <input class="save" type="submit" value="Save" />

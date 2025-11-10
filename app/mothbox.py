@@ -1,15 +1,14 @@
-from flask import Flask, request, flash, render_template, url_for, redirect, abort, send_from_directory
+from flask import Flask, request, flash, render_template, stream_template, url_for, redirect, abort, send_from_directory
 from flask_thumbnails import Thumbnail
 
 from werkzeug.datastructures import MultiDict
 
 import subprocess
 import os.path
-import urllib.request
 from datetime import datetime
 
 
-from app.lib import settings, switches, testing, datasets
+from app.lib import settings, switches, testing, datasets, wifi
 from app import forms
 
 app = Flask(__name__)
@@ -64,7 +63,7 @@ def status():
     schedule["hours"] = [f'{int(x):02}:{schedule["minute"]:02}' for x in schedule["hour"].split(";")]
 
     device_mode = switches.mode()
-    internet = check_internet()
+    internet = wifi.check_internet()
     updates = check_for_updates()
     versions = check_for_versions()
     
@@ -140,7 +139,7 @@ def data():
 @app.route('/data/gallery/<dir>')
 def data_gallery(dir):
     set = datasets.Dataset(dir)
-    return render_template("hx/data_gallery.html", photos = set.photos(), width='200')
+    return stream_template("hx/data_gallery.html", photos = set.photos(), width='200')
 
 
 @app.route("/config/site", methods=["GET", "POST"])
@@ -188,22 +187,29 @@ def config_operation():
     schedule_path = settings.find_settings()
     schedule = settings.load_settings(schedule_path)
     old_wifi = (schedule["ssid"], schedule["wifipass"])
-    schedule_for_form = MultiDict(schedule)
+    schedule_for_form = MultiDict()
 
     form = forms.OperationForm(request.form or schedule_for_form)
 
     if request.method == 'POST':
         if form.validate():
             d = dict(form.data)
-            d["onlyflash"] = int(d["onlyflash"])
             new_wifi = (d["ssid"], d["wifipass"])
             if new_wifi != old_wifi:
-                flash(f'Added wifi for: {d["ssid"]}. You will need to restart the device.', "ok")
-            settings.write_settings(schedule_path, d)
-            flash("Saved configuration", "ok")
+                attempt = wifi.connect(*new_wifi)
+                if attempt == True:
+                    success = wifi.check_internet() and " and connected" or " but without internet so far"
+                    flash(f'Added wifi for: {d["ssid"]}{success}', "ok")
+                elif attempt == False:
+                    flash(f'Added wifi for: {d["ssid"]}. You will need to restart the device.', "ok")
+                    settings.write_settings(schedule_path, d)
+                else:
+                    flash(f'Error adding wifi: {attempt}', "error")
         else:
             flash("Validation error", "error")
-    return render_template("config_operation.html", site=site(), form=form)
+    return render_template("config_operation.html", site=site(), form=form,
+                           current_connections=wifi.current_connections(),
+                           wifi_networks=wifi.wifi_networks(ifname="wlp58s0"))
 
 @app.route("/config/camera", methods=["GET", "POST"])
 def config_camera():
@@ -253,12 +259,6 @@ def prepare_form(request, form, source):
     for_form = MultiDict(source)
     return form(request.form or for_form)
 
-def check_internet(url="https://caterpillarscount.unc.edu", timeout=5):
-    try:
-        urllib.request.urlopen(url, timeout=timeout)
-        return True
-    except Exception as e:
-        return False
 
     
 def check_for_updates():

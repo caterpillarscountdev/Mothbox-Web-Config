@@ -22,7 +22,7 @@ class ScheduleForm(Form):
 class OperationForm(Form):
     onlyflash = BooleanField("Only Flash")
 
-    ssid = StringField("Wifi SSID")
+    ssid = StringField("Wifi SSID", render_kw={"list": "ssid_list"})
     wifipass = StringField("Wifi Pass")
 
     
