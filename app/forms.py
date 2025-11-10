@@ -35,6 +35,7 @@ class CameraForm(Form):
     #AfRange = SelectField("AF Range", choices = [[0, "Normal"], [1, "Macro"], [2, "Full"]])
     #AwbEnable = BooleanField("AWB Enable")
     ExposureValue = StringField("Exposure Value (-8.0 to 8.0)")
+    ColourGains = StringField("WB Colour Gains (two semi-colon-separated decimal values, e.g. 2.259;1.4)")
     HDR = SelectField("HDR", choices = [[1, "Off"], [3, "3 Photos"]])
     HDR_width = StringField("HDR exposure shift duration")
     AutoCalibration = BooleanField("Auto Calibration")

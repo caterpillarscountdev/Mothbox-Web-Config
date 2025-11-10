@@ -14,3 +14,4 @@ AutoCalibrationPeriod,600, Seconds since last autocalibration to run a new calib
 ImageFileType,0, 0 is jpeg   1 is png (larger file size and much slower to save but no compression)  2 is BMP HUGE file but very fast to save
 VerticalFlip,1, 0 is no flip     1 is flip the image vertically mothbox v4 uses FLIP
 Name,mb01,NOTE=we actually just use serial number to create unique name - not used anymore
+ColourGains,2.259;1.4,ColourGain for fixed white-balance
