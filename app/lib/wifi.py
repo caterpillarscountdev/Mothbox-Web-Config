@@ -38,6 +38,6 @@ def connect(ssid, password, ifname="wlan1"):
         if result.returncode == 0:
             return True
         else:
-            return result.stderr
+            return result.stderr or result.stdout
     else:
         return False
