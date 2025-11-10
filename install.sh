@@ -61,6 +61,8 @@ sudo echo 'pi,www-data ALL=(ALL) NOPASSWD:/home/pi/Desktop/Mothbox/scripts/wakeu
 # Let apache update code
 sudo echo 'www-data ALL=(pi) NOPASSWD:/home/pi/Desktop/Mothbox/Web/gitupdate.sh' | sudo EDITOR='tee -a' visudo
 sudo echo 'pi,www-data ALL=(ALL) NOPASSWD:/usr/bin/systemctl' | sudo EDITOR='tee -a' visudo 
+sudo echo 'pi,www-data ALL=(ALL) NOPASSWD:/usr/bin/nmcli' | sudo EDITOR='tee -a' visudo 
+sudo echo 'www-data ALL=(pi) NOPASSWD:/home/pi/Desktop/Mothbox/TakePhoto.py' | sudo EDITOR='tee -a' visudo 
 
 
 # Allow apache to write config files

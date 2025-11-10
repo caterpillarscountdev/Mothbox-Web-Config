@@ -10,7 +10,7 @@ def check_internet(url="https://caterpillarscount.unc.edu", timeout=5):
 
 
 def wifi_devices():
-    result = subprocess.check_output(["nmcli", "-g", "type,device", "device"], text=True)
+    result = subprocess.check_output(["sudo", "nmcli", "-g", "type,device", "device"], text=True)
     return [y for x,y in [k.split(':') for k in result.splitlines()] if x == 'wifi']
 
 def wifi_networks(ifname="wlan1"):
@@ -22,7 +22,7 @@ def wifi_networks(ifname="wlan1"):
         return {}
 
 def current_connections():
-    result = subprocess.check_output(["nmcli", "-g", "device,ssid,active", "device", "wifi"], text=True)
+    result = subprocess.check_output(["sudo", "nmcli", "-g", "device,ssid,active", "device", "wifi"], text=True)
     return {d:s for d,s,active in [k.split(':') for k in result.splitlines() if k] if active == "yes"}
     
 
