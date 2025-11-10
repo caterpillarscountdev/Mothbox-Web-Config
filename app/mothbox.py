@@ -198,7 +198,7 @@ def config_operation():
             if new_wifi != old_wifi:
                 attempt = wifi.connect(*new_wifi)
                 if attempt == True:
-                    success = wifi.check_internet() and " and connected" or " but without internet so far"
+                    success = wifi.check_internet() and " and connected" or " but <a target='_blank' href='https://nmcheck.gnome.org/'>without internet</a> so far."
                     flash(f'Added wifi for: {d["ssid"]}{success}', "ok")
                 elif attempt == False:
                     flash(f'Added wifi for: {d["ssid"]}. You will need to restart the device.', "ok")
