@@ -29,7 +29,12 @@ def current_connections():
 def connect(ssid, password, ifname="wlan1"):
     devices = wifi_devices()
     if ifname in devices:
-        result = subprocess.run(["sudo", "nmcli", "device", "connect", ssid, "password", password, "ifname", ifname], text=True)
+        cmd = ["sudo", "nmcli", "device", "connect", ssid]
+        if password:
+            cmd.extend(["password", password])
+        if ifname:
+            cmd.extend(["ifname", ifname])
+        result = subprocess.run(cmd, text=True)
         if result.returncode == 0:
             return True
         else:
