@@ -17,11 +17,11 @@ class ScheduleForm(Form):
     minute = IntegerField("Start Minute")
     camera_interval = IntegerField("Photo interval (minutes)")
     runtime = IntegerField("Runtime (minutes)")
+    onlyflash = BooleanField("Only use Flash to attract")
+    attractOffPhoto = BooleanField("Turn Attract off during photo capture")
 
     
 class OperationForm(Form):
-    onlyflash = BooleanField("Only Flash")
-
     ssid = StringField("Wifi SSID", render_kw={"list": "ssid_list"})
     wifipass = StringField("Wifi Pass")
 

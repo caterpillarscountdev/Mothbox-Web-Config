@@ -19,7 +19,11 @@
     {{ render_field(form.runtime) }}
     {{ render_field(form.utc_off) }}
   </fieldset>
-  
+  <fieldset>
+    <label>Flash and Attract</label>
+    {{ render_field(form.attractOffPhoto) }}
+    {{ render_field(form.onlyflash) }}
+  </fieldset>    
   <input class="save" type="submit" value="Save" />
   
 </form>
