@@ -27,13 +27,15 @@ sudo bash -c 'cat > /etc/apache2/sites-available/001-mothbox.conf <<EOF
 
 EOF'
 
-sudo bash -c 'cat > /var/logrotate.d/mothbox <<EOF
+sudo bash -c 'cat > /etc/logrotate.d/mothbox <<EOF
 /home/pi/Desktop/Mothbox/logs/*.txt
 {
     su pi pi
-    weekly
+    daily
+    notifempty
     missingok
     rotate 4
+    nomail
 }
 EOF'
 
