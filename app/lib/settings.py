@@ -95,7 +95,9 @@ def load_settings(file_path):
                 elif setting == "wifipass":
                     pass
                 elif setting == "onlyflash":
-                    value = int(value)
+                    value = value.lower() in ['1', 'true']
+                elif setting == "attractOffPhoto":
+                    value = value.lower() in ['1', 'true']
                 settings[setting] = value
 
         return settings
