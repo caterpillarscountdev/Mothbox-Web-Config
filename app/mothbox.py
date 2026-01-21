@@ -62,7 +62,11 @@ def status():
     schedule["days"] = [forms.days_of_week[int(x)-1] for x in schedule["weekday"].split(";")]
     schedule["hours"] = [f'{int(x):02}:{schedule["minute"]:02}' for x in schedule["hour"].split(";")]
 
-    device_mode = switches.mode()
+    device_mode = "(unknown)"
+    try:
+        device_mode = switches.mode()
+    except OSError as e:
+        flash(f"Mode check failed: {e}", "error")
     internet = wifi.check_internet()
     updates = check_for_updates()
     versions = check_for_versions()
