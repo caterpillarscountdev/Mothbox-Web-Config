@@ -1,4 +1,4 @@
-from flask import Flask, request, flash, render_template, stream_template, url_for, redirect, abort, send_from_directory
+from flask import Flask, request, flash, render_template, stream_template, url_for, redirect, abort, send_from_directory, current_app
 from flask_thumbnails import Thumbnail
 
 from werkzeug.datastructures import MultiDict
@@ -6,6 +6,7 @@ from werkzeug.datastructures import MultiDict
 import subprocess
 import os.path
 from datetime import datetime
+import requests
 
 
 from app.lib import settings, switches, testing, datasets, wifi
@@ -26,6 +27,8 @@ app.config['THUMBNAIL_MEDIA_ROOT'] = datasets.PHOTOS_ROOT
 app.config['THUMBNAIL_MEDIA_URL'] = '/media/'
 app.config['THUMBNAIL_MEDIA_THUMBNAIL_ROOT'] = datasets.THUMBS_ROOT
 app.config['THUMBNAIL_MEDIA_THUMBNAIL_URL'] = '/media/thumbnails/'
+
+app.config['MMM_ENDPOINT'] = os.environ.get("MMM_ENDPOINT", "http://localhost:5001/")
 
 
 def site():
@@ -64,6 +67,7 @@ def status():
 
     device_mode = "(unknown)"
     try:
+        raise OSError()
         device_mode = switches.mode()
     except OSError as e:
         flash(f"Mode check failed: {e}", "error")
@@ -140,6 +144,42 @@ def data():
     sets = datasets.get_datasets()
     return render_template("data_upload.html", site=site(), data=locals())
 
+@app.route('/data/upload/start/<dir>')
+def data_upload_start(dir):
+    set = datasets.Dataset(dir)
+    manifest = set.manifest()
+    device_key = None
+    if not device_key:
+        return render_template("hx/upload_button.html", d = {"dir": dir}, msg = "You need a valid device key to upload at <a href='/config/site'>device key settings</a>")
+    remaining = []
+    check = requests.post(current_app.config["MMM_ENDPOINT"] + "check_manifest",
+                          params = {"key": device_key},
+                          json={
+                              "deviceName": None,
+                              "night": dir,
+                              "files": manifest
+                          })
+    if check.status_code < 400:
+        resp = check.json()
+        for f in resp.files:
+            if f.missing:
+                remaining.append(f"{f.filename} {f.upload_url}")
+            set.set_upload_remainining(remaining)
+        return render_template("hx/upload_start.html", dataset = set)
+
+    return render_template("hx/upload_button.html", d = {"dir": dir},  msg = "Upload failed to start, check your <a href='/config/site'>device key settings</a>")
+
+@app.route('/data/upload/status/<dir>')
+def data_upload_status(dir):
+    set = datasets.Dataset(dir)
+    return render_template("hx/upload_status.html", dataset = set)
+
+
+@app.route('/data/upload/done/<dir>')
+def data_upload_done(dir):
+    set = datasets.Dataset(dir)
+    return render_template("hx/upload_done.html", dataset = set)
+
 @app.route('/data/gallery/<dir>')
 def data_gallery(dir):
     set = datasets.Dataset(dir)
@@ -160,7 +200,7 @@ def config_site():
             flash("Saved configuration", "ok")
         else:
             flash("Validation error", "error")
-    return render_template("config_site.html", site=site(), form=form)
+    return render_template("config_site.html", site=site(), form=form, mmm_endpoint = current_app.config["MMM_ENDPOINT"])
 
 
 @app.route("/config/schedule", methods=["GET", "POST"])

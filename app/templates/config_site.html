@@ -36,6 +36,8 @@
   </fieldset>
   <fieldset>
     <label>Device Setup</label>
+    {{ render_field(form.DeviceKey) }}
+    <dd>(get key from <a target="_blank" href="{{mmm_endpoint}}">MothMonitor</a>)</dd>
     {{ render_field(form.LandingSheet) }}
     {{ render_field(form.AttractorType) }}
     <div class="flex">{{ render_field(form.ScaleBarPresent) }}</div>

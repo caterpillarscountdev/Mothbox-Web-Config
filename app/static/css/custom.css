@@ -49,7 +49,7 @@ ul.flashes {
     list-style-type: none;
 }
 
-ul.flashes li {
+ul.flashes li, .error {
     padding: 0.5rem;
     color: white;
     background-color: #666
@@ -57,8 +57,12 @@ ul.flashes li {
 ul.flashes li.ok {
     background-color: #393;
 }
-ul.flashes li.error {
+ul.flashes li.error, .error {
     background-color: var(--error-color);
+}
+
+.error a {
+    color: white;
 }
 
 /* Maps */

@@ -9,7 +9,14 @@
 <section class="boxed">
   {% set photos = d.photos() %}
   <h2>{{d.dir}} ({{photos|length}} photos)</h2>
-  <p>Not uploaded.
+  <p>
+    {% if d.is_uploaded() %}
+    Uploaded on {{ d.is_uploaded().strftime('%Y-%m-%d')}}.
+    {% else %}
+    <div>
+      {% include "hx/upload_button.html" %}
+    </div>
+    {% endif %}
   </p>
   <div>
     <button hx-get="{{url_for('data_gallery', dir=d.dir)}}" hx-target="closest div">Show images {{indicator()}} </button>

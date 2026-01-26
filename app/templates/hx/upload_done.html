@@ -1,0 +1,11 @@
+<div hx-trigger="done" hx-get="{{url_for('data_upload_done', dir=dataset.dir)}}" hx-swap="outerHTML" hx-target="this">
+  <h3 role="status" id="pblabel" tabindex="-1" autofocus>Complete</h3>
+
+  <div
+      hx-get="{{url_for('data_upload_status', dir=dataset.dir)}}"
+      hx-trigger="none"
+      hx-target="this"
+      hx-swap="innerHTML">
+    {% include "hx/upload_status.html" %}
+  </div>
+</div>
