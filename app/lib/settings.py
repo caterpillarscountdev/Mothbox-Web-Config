@@ -48,11 +48,11 @@ def find_settings(filename="schedule_settings.csv"):
     file_path = None
     for path in external_media_paths:
         file_path = find_file(path, filename, depth=search_depth)
-        print(f"Found settings on external media: {file_path}")
+        #print(f"Found settings on external media: {file_path}")
         break
     if file_path is None:
         file_path = default_path
-        print(f"No external settings, using internal csv at: {file_path}")
+        #print(f"No external settings, using internal csv at: {file_path}")
     return file_path
 
 
