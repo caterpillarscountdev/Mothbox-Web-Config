@@ -10,6 +10,7 @@
 </script>
 <script src="/static/js/map-lat-lon.js"></script>
 <script src="/static/js/site-manage.js"></script>
+<meta name="htmx-config" content='{"selfRequestsOnly": false}' />
 
 {% endblock %}
 
@@ -36,7 +37,11 @@
   </fieldset>
   <fieldset>
     <label>Device Setup</label>
-    {{ render_field(form.DeviceKey) }}
+    {{ render_field(form.DeviceKey, **{
+    "label_extra": "<span id='check_device_key'></span>",
+    "hx-get": url_for("config_check_device_key"),
+    "hx-target": "#check_device_key"
+    }) }}
     <dd>(get key from <a target="_blank" href="{{mmm_endpoint}}">MothMonitor</a>)</dd>
     {{ render_field(form.LandingSheet) }}
     {{ render_field(form.AttractorType) }}

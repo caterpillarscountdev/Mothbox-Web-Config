@@ -148,11 +148,12 @@ def data():
 def data_upload_start(dir):
     set = datasets.Dataset(dir)
     manifest = set.manifest()
-    device_key = None
+    metadata = settings.load_settings(metadata_path)
+    device_key = metadata["DeviceKey"]
     if not device_key:
         return render_template("hx/upload_button.html", d = {"dir": dir}, msg = "You need a valid device key to upload at <a href='/config/site'>device key settings</a>")
     remaining = []
-    check = requests.post(current_app.config["MMM_ENDPOINT"] + "check_manifest",
+    check = requests.post(current_app.config["MMM_ENDPOINT"] + "upload/check_manifest",
                           params = {"key": device_key},
                           json={
                               "deviceName": None,
@@ -185,6 +186,16 @@ def data_gallery(dir):
     set = datasets.Dataset(dir)
     return stream_template("hx/data_gallery.html", photos = set.photos(), width='200')
 
+
+@app.route("/config/check_device_key")
+def config_check_device_key():
+    check = requests.get(current_app.config["MMM_ENDPOINT"] + "upload/check_key",
+                         params = {"key": request.args.get('DeviceKey')}
+                         )
+    if check.status_code < 400:
+        return "<span class='ok' style='padding: 0.2em' title='valid key'>&#x2714;</span>"
+
+    return "<span class='error' style='padding: 0.2em' title='invalid key'>&#10754;</span>"
 
 @app.route("/config/site", methods=["GET", "POST"])
 def config_site():
