@@ -2,4 +2,4 @@
 {% if msg %}
 <div class="error">{{msg|safe}}</div>
 {% endif %}
-<button hx-get="{{url_for('data_upload_start', dir=d.dir)}}" hx-target="closest div">Upload now {{indicator()}} </button>
+<button hx-get="{{url_for('data_upload_start', dir=d.dir)}}" hx-target="closest div">{{button_text|default("Upload now")}} {{indicator()}} </button>

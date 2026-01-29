@@ -1,4 +1,4 @@
-from flask import Flask, request, flash, render_template, stream_template, url_for, redirect, abort, send_from_directory, current_app
+from flask import Flask, request, flash, render_template, stream_template, url_for, redirect, abort, send_from_directory, current_app, make_response
 from flask_thumbnails import Thumbnail
 
 from werkzeug.datastructures import MultiDict
@@ -67,7 +67,6 @@ def status():
 
     device_mode = "(unknown)"
     try:
-        raise OSError()
         device_mode = switches.mode()
     except OSError as e:
         flash(f"Mode check failed: {e}", "error")
@@ -149,6 +148,7 @@ def data_upload_start(dir):
     set = datasets.Dataset(dir)
     manifest = set.manifest()
     metadata = settings.load_settings(metadata_path)
+    controls = settings.load_control_values()
     device_key = metadata["DeviceKey"]
     if not device_key:
         return render_template("hx/upload_button.html", d = {"dir": dir}, msg = "You need a valid device key to upload at <a href='/config/site'>device key settings</a>")
@@ -156,25 +156,37 @@ def data_upload_start(dir):
     check = requests.post(current_app.config["MMM_ENDPOINT"] + "upload/check_manifest",
                           params = {"key": device_key},
                           json={
-                              "deviceName": None,
+                              "deviceName": controls["name"],
                               "night": dir,
                               "files": manifest
                           })
     if check.status_code < 400:
         resp = check.json()
-        for f in resp.files:
-            if f.missing:
-                remaining.append(f"{f.filename} {f.upload_url}")
-            set.set_upload_remainining(remaining)
+        for f in resp["files"]:
+            if f["missing"]:
+                remaining.append(f)
+        set.set_upload_remaining(remaining)
         return render_template("hx/upload_start.html", dataset = set)
 
     return render_template("hx/upload_button.html", d = {"dir": dir},  msg = "Upload failed to start, check your <a href='/config/site'>device key settings</a>")
 
 @app.route('/data/upload/status/<dir>')
 def data_upload_status(dir):
+    error = None
     set = datasets.Dataset(dir)
-    return render_template("hx/upload_status.html", dataset = set)
-
+    remaining = set.upload_remaining
+    if len(remaining) > 0:
+        f = remaining.pop()
+        up = requests.put(f["upload_url"], data = set.file_contents(f["filename"]))
+        if up.status_code < 400:
+            set.set_upload_remaining(remaining)
+        else:
+            error = up.text
+    response = make_response(render_template("hx/upload_status.html", dataset = set, error = error))
+    if len(remaining) == 0:
+        set.set_uploaded(True)
+        response.headers["HX-Trigger"] = "done"
+    return response
 
 @app.route('/data/upload/done/<dir>')
 def data_upload_done(dir):

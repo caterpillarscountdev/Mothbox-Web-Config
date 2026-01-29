@@ -10,7 +10,7 @@
 .flex-gallery {
     display: flex;
     flex-wrap: wrap;
-    height: 300px;
+    max-height: 300px;
     overflow: scroll;
 }
 .flex-gallery > * {

@@ -1,4 +1,4 @@
-import os, glob, mimetypes
+import os, glob, mimetypes, json
 from pathlib import Path
 from datetime import datetime, timezone
 
@@ -20,13 +20,16 @@ class Dataset:
                  "type":mimetypes.guess_file_type(f)[0]}
                 for f in sorted(glob.glob(os.path.join(self.path, "*.jpg")) + glob.glob(os.path.join(self.path, "*.zip")))]    
 
+    def file_contents(self, filename):
+        with open(os.path.join(self.path, filename), 'rb') as f:
+            return f.read()
     
     @property
     def _uploaded(self):
-        return Path(self.dir) / "uploaded.txt"
+        return Path(self.path) / "uploaded.txt"
     
     def is_uploaded(self):
-        return self._uploaded.exists() and datetime.fromtimestamp(self.uploaded.stat().st_mtime)
+        return self._uploaded.exists() and datetime.fromtimestamp(self._uploaded.stat().st_mtime)
 
     def set_uploaded(self, val=True):
         if val:
@@ -39,17 +42,28 @@ class Dataset:
         return len(self.manifest())
 
     @property
-    def _upload_remaining(self):
-        return Path(self.dir) / "remaining.txt"
+    def upload_total_left(self):
+        if not self._upload_remaining.exists():
+            return self.upload_total
+        return self.upload_total - len(self.upload_remaining)
     
+    @property
+    def _upload_remaining(self):
+        return Path(self.path) / "remaining.txt"
+
     @property
     def upload_remaining(self):
         with self._upload_remaining.open() as f:
-            return len(f.readlines())
+            try:
+                return json.load(f)
+            except json.JSONDecodeError as e:
+                pass
+        self._upload_remaining.unlink()
+        return []
 
-    def set_upload_remaining(files):
-        with self._upload_remaining.open() as f:
-            f.writelines(files)
+    def set_upload_remaining(self, files):
+        with self._upload_remaining.open("w") as f:
+            json.dump(files, f)
             
     def metadata_zip(self):
         return os.path.join(self.dir, 'metadata.zip')

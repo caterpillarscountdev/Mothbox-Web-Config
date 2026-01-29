@@ -9,18 +9,20 @@
 <section class="boxed">
   {% set photos = d.photos() %}
   <h2>{{d.dir}} ({{photos|length}} photos)</h2>
+  <div>
+    <button  style="float:right" hx-get="{{url_for('data_gallery', dir=d.dir)}}" hx-target="closest div">Show images {{indicator()}} </button>
+  </div>
   <p>
-    {% if d.is_uploaded() %}
-    Uploaded on {{ d.is_uploaded().strftime('%Y-%m-%d')}}.
-    {% else %}
     <div>
+      {% if d.is_uploaded() %}
+      Uploaded on {{ d.is_uploaded().strftime('%Y-%m-%d')}}.
+      {% set button_text %}Force Upload Recheck{% endset %}
+      {% elif d.upload_total != d.upload_total_left %}
+      {% set button_text %}Finish Upload ({{d.upload_total_left}}/{{d.upload_total}}){% endset %}
+      {% endif %}
       {% include "hx/upload_button.html" %}
     </div>
-    {% endif %}
   </p>
-  <div>
-    <button hx-get="{{url_for('data_gallery', dir=d.dir)}}" hx-target="closest div">Show images {{indicator()}} </button>
-  </div>
 </section>
 {% endfor %}
 {% endblock %}
