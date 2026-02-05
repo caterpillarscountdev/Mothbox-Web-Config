@@ -36,6 +36,8 @@ def connect(ssid, password, ifname="wlan1"):
             cmd.extend(["ifname", ifname])
         result = subprocess.run(cmd, text=True, capture_output=True)
         if result.returncode == 0:
+            cmd = ["sudo", "nmcli", "con", "modify", ssid, "connection.autoconnect", "yes"]
+            result = subprocess.run(cmd, text=True, capture_output=True)
             return True
         else:
             return result.stderr or result.stdout
