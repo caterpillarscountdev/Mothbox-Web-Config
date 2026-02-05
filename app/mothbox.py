@@ -28,7 +28,7 @@ app.config['THUMBNAIL_MEDIA_URL'] = '/media/'
 app.config['THUMBNAIL_MEDIA_THUMBNAIL_ROOT'] = datasets.THUMBS_ROOT
 app.config['THUMBNAIL_MEDIA_THUMBNAIL_URL'] = '/media/thumbnails/'
 
-app.config['MMM_ENDPOINT'] = os.environ.get("MMM_ENDPOINT", "http://localhost:5001/")
+app.config['MMM_ENDPOINT'] = os.environ.get("MMM_ENDPOINT", "https://mothmonitor-dev-dept-caterpillars-count.apps.cloudapps.unc.edu/")
 
 
 def site():
