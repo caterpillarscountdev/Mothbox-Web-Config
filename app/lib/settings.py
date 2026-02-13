@@ -39,13 +39,12 @@ def find_file(path, filename, depth=1):
     return None
 
 
-def find_settings(filename="schedule_settings.csv"):
-    # first look for any updated CSV files on external media, we will prioritize those
-
-    external_media_paths = ("/media", "/mnt")  # Common external media mount points
+def find_settings(filename="schedule_settings.csv", external_media_paths=[]):
+    # external_media_paths = ("/media", "/mnt")  # Common external media mount points
     default_path = relative_file(filename)
     search_depth = 2  # only want to look in the top directory of an external drive, two levels gets us there while still looking through any media
     file_path = None
+    # first look for any updated CSV files on external media, we will prioritize those
     for path in external_media_paths:
         file_path = find_file(path, filename, depth=search_depth)
         #print(f"Found settings on external media: {file_path}")

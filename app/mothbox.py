@@ -127,7 +127,8 @@ def logs(log):
         "Attract_On",
         "Backup",
         "Scheduler",
-        "TakePhoto"
+        "TakePhoto",
+        "Upload"
     ]
     logs = {}
     for log in lognames:
