@@ -38,6 +38,7 @@ def site():
             "logo": "/assets/images/logos/",
             "nav_pages": [
                 {"url": url_for("status"), "title": "Status"},
+                {"url": url_for("setup"), "title": "Setup"},
                 {"url": url_for("test_device"), "title": "Testing"},
                 {"url": url_for("data"), "title": "Data Upload"},
                 {"category": "Config",
@@ -200,6 +201,29 @@ def data_gallery(dir):
     return stream_template("hx/data_gallery.html", photos = set.photos(), width='200')
 
 
+@app.route("/setup", methods=["GET", "POST"])
+def setup():
+    data = MultiDict()
+    data.update(config_site_data())
+    data.update(config_schedule_data())
+
+    form = forms.SetupForm(request.form or data)
+    if request.method == 'POST':
+        if form.validate():
+            d = dict(form.data)
+            config_operation_save(d)
+            config_schedule_save(d)
+            config_site_save(d)
+        else:
+            flash("Validation error", "error")
+    return render_template("setup.html", site=site(), form=form,
+                           mmm_endpoint = current_app.config["MMM_ENDPOINT"],
+                           wifi_devices=wifi.wifi_devices(),
+                           current_connections=wifi.current_connections()
+                           )
+        
+    
+
 @app.route("/config/check_device_key")
 def config_check_device_key():
     check = requests.get(current_app.config["MMM_ENDPOINT"] + "upload/check_key",
@@ -212,73 +236,94 @@ def config_check_device_key():
 
 @app.route("/config/site", methods=["GET", "POST"])
 def config_site():
-    metadata = settings.load_settings(metadata_path)
 
-    metadata_for_form = MultiDict(metadata)
-
+    metadata_for_form = config_site_data()
     form = forms.SiteForm(request.form or metadata_for_form)
 
     if request.method == 'POST':
         if form.validate():
-            settings.write_settings(metadata_path, form.data)
-            flash("Saved configuration", "ok")
+            config_site_save(form.data)
         else:
             flash("Validation error", "error")
     return render_template("config_site.html", site=site(), form=form, mmm_endpoint = current_app.config["MMM_ENDPOINT"])
 
+def config_site_data():
+    metadata = settings.load_settings(metadata_path)
+
+    return MultiDict(metadata)
+    
+
+def config_site_save(d):
+    settings.write_settings(metadata_path, d)
+    flash("Saved configuration", "ok")
+    
+
 
 @app.route("/config/schedule", methods=["GET", "POST"])
 def config_schedule():
-    schedule = settings.load_settings(schedule_path)
-
-    schedule_for_form = MultiDict(schedule)
-    schedule_for_form.setlist("hour", schedule_for_form["hour"].split(";"))
-    schedule_for_form.setlist("weekday", schedule_for_form["weekday"].split(";"))
-
+    schedule_for_form = config_schedule_data()
     form = forms.ScheduleForm(request.form or schedule_for_form)
 
     if request.method == 'POST':
         if form.validate():
             d = dict(form.data)
-            d["hour"] = ";".join(str(x) for x in d["hour"])
-            d["weekday"] = ";".join(str(x) for x in d["weekday"])
-            
-            settings.write_settings(schedule_path, d)
-            
-            flash("Saved configuration", "ok")
+            config_schedule_save(d)
         else:
             flash("Validation error", "error")
     return render_template("config_schedule.html", site=site(), form=form)
 
+def config_schedule_data():
+    schedule = settings.load_settings(schedule_path)
+
+    schedule_for_form = MultiDict(schedule)
+    schedule_for_form.setlist("hour", schedule_for_form["hour"].split(";"))
+    schedule_for_form.setlist("weekday", schedule_for_form["weekday"].split(";"))
+    return schedule_for_form
+    
+
+def config_schedule_save(d):
+    d["hour"] = ";".join(str(x) for x in d["hour"])
+    d["weekday"] = ";".join(str(x) for x in d["weekday"])
+    
+    settings.write_settings(schedule_path, d)
+    
+    flash("Saved configuration", "ok")
+
+    
+@app.route("/config/operation/wifi_networks")
+def config_operation_wifi_networks():
+    return render_template("hx/config_operation_wifi_networks.html", wifi_networks=wifi.wifi_networks())
+    
+
 @app.route("/config/operation", methods=["GET", "POST"])
 def config_operation():
-    schedule_path = settings.find_settings()
-    schedule = settings.load_settings(schedule_path)
-    old_wifi = (schedule["ssid"], schedule["wifipass"])
-    schedule_for_form = MultiDict()
-
-    form = forms.OperationForm(request.form or schedule_for_form)
+    form = forms.OperationForm(request.form or MultiDict())
 
     if request.method == 'POST':
         if form.validate():
             d = dict(form.data)
-            new_wifi = (d["ssid"], d["wifipass"])
-            if new_wifi != old_wifi:
-                attempt = wifi.connect(*new_wifi)
-                if attempt == True:
-                    success = wifi.check_internet() and " and connected" or " but <a target='_blank' href='https://nmcheck.gnome.org/'>without internet</a> so far."
-                    flash(f'Added wifi for: {d["ssid"]}{success}', "ok")
-                elif attempt == False:
-                    flash(f'Added wifi for: {d["ssid"]}. You will need to restart the device.', "ok")
-                    settings.write_settings(schedule_path, d)
-                else:
-                    flash(f'Error adding wifi: {attempt}', "error")
+            config_operation_save(d)
         else:
             flash("Validation error", "error")
     return render_template("config_operation.html", site=site(), form=form,
                            wifi_devices=wifi.wifi_devices(),
-                           current_connections=wifi.current_connections(),
-                           wifi_networks=wifi.wifi_networks())
+                           current_connections=wifi.current_connections())
+
+def config_operation_save(d):
+    schedule = settings.load_settings(schedule_path)
+    old_wifi = (schedule["ssid"], schedule["wifipass"])
+    new_wifi = (d["ssid"], d["wifipass"])
+    if new_wifi != old_wifi:
+        attempt = wifi.connect(*new_wifi)
+        if attempt == True:
+            success = wifi.check_internet() and " and connected" or " but <a target='_blank' href='https://nmcheck.gnome.org/'>without internet</a> so far."
+            flash(f'Added wifi for: {d["ssid"]}{success}', "ok")
+        elif attempt == False:
+            flash(f'Added wifi for: {d["ssid"]}. You will need to restart the device.', "ok")
+            settings.write_settings(schedule_path, d)
+        else:
+            flash(f'Error adding wifi: {attempt}', "error")
+    
 
 @app.route("/config/camera", methods=["GET", "POST"])
 def config_camera():

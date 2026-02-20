@@ -22,8 +22,8 @@ class ScheduleForm(Form):
 
     
 class OperationForm(Form):
-    ssid = StringField("Wifi SSID", render_kw={"list": "ssid_list"})
-    wifipass = StringField("Wifi Pass")
+    ssid = StringField("New Wifi SSID", render_kw={"list": "ssid_list"})
+    wifipass = StringField("New Wifi Pass")
 
     
 class CameraForm(Form):
@@ -46,7 +46,7 @@ class CameraForm(Form):
 
 class SiteForm(Form):
     SiteName = StringField("Site Name")
-    SiteCrew = StringField("Site Host")
+    SiteCrew = StringField("Site Host Contact")
     SiteLat = FloatField("Lat.", render_kw={"size": 7})
     SiteLon = FloatField("Lon.", render_kw={"size": 7})
     DeviceKey = StringField("Device Upload Key")
@@ -56,3 +56,7 @@ class SiteForm(Form):
                                choices = ["UV Strip 2.0a", "UV Strip 2.0b"])
     ScaleBarPresent = BooleanField("Scale Bar Present?")
     ColorStandardPresent = BooleanField("Color Standard Present?")
+
+class SetupForm(ScheduleForm, OperationForm, SiteForm):
+    pass
+    

@@ -6,9 +6,12 @@
 
 <h2>Status</h2>
 
+<a href="{{url_for('setup')}}">Initial setup configuration</a>
+
 <div class="status">
-  <p>Scheduled to operate on <em class="status-label">{{ ", ".join(status.schedule.days)}}</em> at <em class="status-label">{{ ", ".join(status.schedule.hours)}}</em> for <em class="status-label">{{status.schedule.runtime}}</em> minutes.</p>
-  <p>Assigned to the site <em class="status-label">{{ status.metadata.SiteName or "(No Site Assigned)"}}</em></p>
+  <p>Scheduled to operate on <em class="status-label">{{ ", ".join(status.schedule.days)}}</em> at <em class="status-label">{{ ", ".join(status.schedule.hours)}}</em> for <em class="status-label">{{status.schedule.runtime}}</em> minutes. <a href="{{url_for('config_schedule')}}">Setup schedule</a></p>
+  <p>Assigned to the site <em class="status-label">{{ status.metadata.SiteName or "(No Site Assigned)"}}</em><a href="{{url_for('config_site')}}">Setup site</a>
+  </p>
   <p>Mode switch is <em class="status-label">{{status.device_mode}}</em>
     {%if status.device_mode == "DEBUG"%}which will keep the internet connected but not capture new photos.{%endif%}
     {%if status.device_mode == "ACTIVE"%}ready to capture new photos but will shutdown for energy saving.{%endif%}
