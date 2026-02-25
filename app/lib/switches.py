@@ -32,9 +32,9 @@ if gpiod:
 def mode():
     if not gpiod:
         return 'NOT_PI_DEVICE'
-    mode = "ACTIVE"  # possible modes are OFF or DEBUG or ACTIVE
+    mode = "ACTIVE"  # possible modes are OFF or CONFIG(DEBUG) or ACTIVE
     if pin_connected_to_ground(pins.debug):
-        mode = "DEBUG"
+        mode = "CONFIG"
     if pin_connected_to_ground(pins.off):
         mode = "OFF"
         # We won't hit this as the device will shutdown

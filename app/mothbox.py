@@ -211,11 +211,11 @@ def setup():
     if request.method == 'POST':
         if form.validate():
             d = dict(form.data)
+            config_site_save(d)
             config_operation_save(d)
             config_schedule_save(d)
-            config_site_save(d)
         else:
-            flash("Validation error", "error")
+            flash(f"Validation error: {','.join([f.name for f in form._fields.values() if f.errors])}", "error")
     return render_template("setup.html", site=site(), form=form,
                            mmm_endpoint = current_app.config["MMM_ENDPOINT"],
                            wifi_devices=wifi.wifi_devices(),
@@ -254,8 +254,9 @@ def config_site_data():
     
 
 def config_site_save(d):
+    d = {k: d[k] for k in forms.SiteForm()._fields.keys() if d.get(k)}
     settings.write_settings(metadata_path, d)
-    flash("Saved configuration", "ok")
+    flash("Saved site configuration", "ok")
     
 
 
@@ -282,12 +283,13 @@ def config_schedule_data():
     
 
 def config_schedule_save(d):
+    d = {k: d[k] for k in forms.ScheduleForm()._fields.keys() if d.get(k)}
     d["hour"] = ";".join(str(x) for x in d["hour"])
     d["weekday"] = ";".join(str(x) for x in d["weekday"])
     
     settings.write_settings(schedule_path, d)
     
-    flash("Saved configuration", "ok")
+    flash("Saved schedule configuration", "ok")
 
     
 @app.route("/config/operation/wifi_networks")

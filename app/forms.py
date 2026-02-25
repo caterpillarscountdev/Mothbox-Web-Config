@@ -58,5 +58,14 @@ class SiteForm(Form):
     ColorStandardPresent = BooleanField("Color Standard Present?")
 
 class SetupForm(ScheduleForm, OperationForm, SiteForm):
-    pass
-    
+    LandingSheet = None
+    AttractorType = None
+    ScaleBarPresent = None
+    ColorStandardPresent = None
+
+    utc_off = None
+    minute = None
+    camera_interval = None
+    runtime = None
+    onlyflash = None
+    attractOffPhoto = None

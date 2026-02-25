@@ -13,7 +13,7 @@
   <p>Assigned to the site <em class="status-label">{{ status.metadata.SiteName or "(No Site Assigned)"}}</em><a href="{{url_for('config_site')}}">Setup site</a>
   </p>
   <p>Mode switch is <em class="status-label">{{status.device_mode}}</em>
-    {%if status.device_mode == "DEBUG"%}which will keep the internet connected but not capture new photos.{%endif%}
+    {%if status.device_mode == "CONFIG"%}which will keep the internet connected but not capture new photos.{%endif%}
     {%if status.device_mode == "ACTIVE"%}ready to capture new photos but will shutdown for energy saving.{%endif%}
     <p>Device name <em class="status-label">{{ status.controls.name }}</em> running software version <em class="status-label">{{ status.versions }}</em> and this config software has <em class="status-label">{{ status.updates }}</em>. Internet is <em class="status-label">{% if status.internet %}Connected{% else %}Offline{%endif %}</em></p>
   </p>
