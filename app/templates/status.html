@@ -19,9 +19,6 @@
   </p>
 
   <div class="flex">
-    <form method="POST" action="{{url_for("debug_mode")}}">
-      <input type="submit" class="save" value="Turn on Debug Mode to keep Wifi on" />
-    </form>
     {% if status.updates == "Update Available" %}
     <form method="POST" action="{{url_for("update_code")}}">
       <input type="submit" class="save" value="Update Software" />
