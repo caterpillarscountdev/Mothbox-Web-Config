@@ -17,7 +17,7 @@ class Dataset:
     def manifest(self):
         return [{"filename": os.path.basename(f),
                  "size": os.stat(f).st_size,
-                 "type":mimetypes.guess_file_type(f)[0]}
+                 "type":mimetypes.guess_type(f)[0]}
                 for f in sorted(glob.glob(os.path.join(self.path, "*.jpg")) + glob.glob(os.path.join(self.path, "*.zip")))]    
 
     def file_contents(self, filename):
