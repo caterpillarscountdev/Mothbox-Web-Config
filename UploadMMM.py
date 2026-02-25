@@ -66,7 +66,7 @@ def run_upload(device_key, device_name):
 
 if __name__ == "__main__":
     if switces.mode() != "CONFIG":
-        return
+        exit()
     print(f"{formatted_time} Upload\n")
     metadata = settings.load_settings(metadata_path)
     controls = settings.load_control_values()
