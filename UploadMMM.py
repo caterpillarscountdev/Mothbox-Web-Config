@@ -1,8 +1,12 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 import requests
 
 from app.lib import settings, datasets
+from datetime import datetime
+
+now = datetime.now()
+formatted_time = now.strftime("%Y-%m-%d %H:%M:%S")  # Adjust the format as needed
 
 MMM_ENDPOINT = "https://mothmonitor-dev-dept-caterpillars-count.apps.cloudapps.unc.edu/"
 
@@ -19,6 +23,7 @@ def find_next_dir():
 def run_upload(device_key, device_name):
     dataset = find_next_dir()
     if not dataset:
+        print(f"No datasets need upload, exiting")
         return None
 
     manifest = dataset.manifest()
@@ -30,10 +35,9 @@ def run_upload(device_key, device_name):
                               "night": dataset.dir,
                               "files": manifest
                           })
-    if check.status_code >= 400:
-        print(f"Error checking manifest for {dataset.dir}: {check.status_code}")
-        print(f" with text: {check.text}")
-        return
+    if not check.ok:
+        print(f"Error checking manifest for {dataset.dir}: {check.status_code} {check.reason}")
+        return dataset, False
     
     resp = check.json()
     for f in resp["files"]:
@@ -58,9 +62,10 @@ def run_upload(device_key, device_name):
 
 
 if __name__ == "__main__":
+    print(f"{formatted_time} Upload\n")
     metadata = settings.load_settings(metadata_path)
     controls = settings.load_control_values()
-    device_key = metadata["DeviceKey"]
+    device_key = metadata.get("DeviceKey")
     d, total = run_upload(device_key, controls["name"])
 
 
