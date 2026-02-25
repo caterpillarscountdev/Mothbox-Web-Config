@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
 
+import runpy
+
+runpy.run_path(".venv/bin/activate_this.py")
+
 import requests
 
-from app.lib import settings, datasets
+from app.lib import settings, datasets, switches
 from datetime import datetime
 
 now = datetime.now()
@@ -61,6 +65,8 @@ def run_upload(device_key, device_name):
 
 
 if __name__ == "__main__":
+    if switces.mode() != "CONFIG":
+        return
     print(f"{formatted_time} Upload\n")
     metadata = settings.load_settings(metadata_path)
     controls = settings.load_control_values()
