@@ -24,7 +24,7 @@ def run_upload(device_key, device_name):
     dataset = find_next_dir()
     if not dataset:
         print(f"No datasets need upload, exiting")
-        return None
+        return None, None
 
     manifest = dataset.manifest()
     remaining = []
