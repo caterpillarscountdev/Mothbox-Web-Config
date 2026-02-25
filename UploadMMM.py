@@ -50,9 +50,8 @@ def run_upload(device_key, device_name):
     while len(remaining) > 0:
         f = remaining.pop()
         up = requests.put(f["upload_url"], data = dataset.file_contents(f["filename"]))
-        if up.status_code >= 400:
-            print(f"Error uploading for {dataset.dir} {f["filename"]}: {check.status_code}")
-            print(f" with text: {check.text}")
+        if not up.ok:
+            print(f"Error uploading for {dataset.dir} {f['filename']}: {check.status_code} {check.reason}")
             break
         dataset.set_upload_remaining(remaining)
         
