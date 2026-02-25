@@ -60,7 +60,7 @@ def run_upload(device_key, device_name):
         dataset.set_upload_remaining(remaining)
         
     dataset.set_uploaded(True)
-    print(f"Uploaded {total} files for {d.dir}.")
+    print(f"Uploaded {total} files for {dataset.dir}.")
     return dataset, total
 
 
