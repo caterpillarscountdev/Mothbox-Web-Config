@@ -179,7 +179,8 @@ def data_upload_status(dir):
     remaining = set.upload_remaining
     if len(remaining) > 0:
         f = remaining.pop()
-        up = requests.put(f["upload_url"], data = set.file_contents(f["filename"]))
+        headers = {'Content-type': f["type"]}
+        up = requests.put(f["upload_url"], headers=headers, data = set.file_contents(f["filename"]))
         if up.status_code < 400:
             set.set_upload_remaining(remaining)
         else:

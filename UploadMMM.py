@@ -53,7 +53,8 @@ def run_upload(device_key, device_name):
     print(f"Starting upload of {total} files for {dataset.dir}.")
     while len(remaining) > 0:
         f = remaining.pop()
-        up = requests.put(f["upload_url"], data = dataset.file_contents(f["filename"]))
+        headers = {'Content-type': f["type"]}
+        up = requests.put(f["upload_url"], headers=headers, data = dataset.file_contents(f["filename"]))
         if not up.ok:
             print(f"Error uploading for {dataset.dir} {f['filename']}: {check.status_code} {check.reason}")
             break
