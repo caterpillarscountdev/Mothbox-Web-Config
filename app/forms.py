@@ -19,6 +19,7 @@ class ScheduleForm(Form):
     runtime = IntegerField("Runtime (minutes)")
     onlyflash = BooleanField("Only use Flash to attract")
     attractOffPhoto = BooleanField("Turn Attract off during photo capture")
+    attracttwo = BooleanField("Enable second attract strip (higher power)")
 
     
 class OperationForm(Form):
@@ -69,3 +70,4 @@ class SetupForm(ScheduleForm, OperationForm, SiteForm):
     runtime = None
     onlyflash = None
     attractOffPhoto = None
+    attracttwo = None

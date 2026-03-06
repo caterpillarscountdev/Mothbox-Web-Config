@@ -12,6 +12,15 @@ def attract_on():
 def attract_off():
     return pin_relay_set(pins.attract, 0)
 
+def attracttwo_state():
+    return pin_relay_state(pins.attracttwo)
+
+def attracttwo_on():
+    return pin_relay_set(pins.attracttwo, 1)
+
+def attracttwo_off():
+    return pin_relay_set(pins.attracttwo, 0)
+
 def flash_state():
     return pin_relay_state(pins.flash)
 

@@ -8,6 +8,7 @@ class pins:
     debug = 12
     flash = 20
     attract = 21
+    attracttwo = 26
 
 GPIO_DEVICE = "/dev/gpiochip4"
 

@@ -98,6 +98,13 @@ def test_device(device):
             else:
                 testing.attract_on()
                 return "Did the UV light turn on? Click again to turn off."
+        case "attracttwo":
+            if testing.attracttwo_state():
+                testing.attracttwo_off()
+                return "Turned off."
+            else:
+                testing.attracttwo_on()
+                return "Did the second UV light turn on? Click again to turn off."
         case "flash":
             if testing.flash_state():
                 testing.flash_off()
