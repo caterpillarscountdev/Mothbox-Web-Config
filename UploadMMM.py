@@ -5,6 +5,7 @@ import runpy
 runpy.run_path(".venv/bin/activate_this.py")
 
 import requests
+import subprocess
 
 from app.lib import settings, datasets, switches
 from datetime import datetime
@@ -15,6 +16,24 @@ formatted_time = now.strftime("%Y-%m-%d %H:%M:%S")  # Adjust the format as neede
 MMM_ENDPOINT = "https://mothmonitor-dev-dept-caterpillars-count.apps.cloudapps.unc.edu/"
 
 metadata_path = settings.find_settings('site_metadata.csv')
+
+def check_for_updates():
+    uptodate = os.path.normpath(os.path.join(here, "gitupdate.sh"))
+    output = subprocess.run(["sudo", "-u", "pi", uptodate, "uptodate"], capture_output=True)
+    return output.stdout.strip().decode("utf-8")
+
+
+def update_code():
+    try:
+        result = subprocess.run(["sudo", "-u", "pi", "/home/pi/Desktop/Mothbox/Web/gitupdate.sh", "pull"], capture_output=True)
+    except FileNotFoundError as e:
+        print(f"Code update failed: {e}")
+    else:
+        if result.returncode == 0:
+            print(f"Code updated {result.stdout.strip().decode('utf-8')}")
+        else:
+            print(f"Code update failed: {result.stderr.strip().decode('utf-8')}")
+    
 
 
 def find_next_dir():
@@ -66,8 +85,10 @@ def run_upload(device_key, device_name):
 
 
 if __name__ == "__main__":
-    if switches.mode() != "CONFIG":
+    if switches.mode() != "ONLINE":
         exit()
+    if check_for_updates() == "Update Available":
+        update_code()
     print(f"{formatted_time} Upload\n")
     metadata = settings.load_settings(metadata_path)
     controls = settings.load_control_values()

@@ -356,7 +356,6 @@ def config_camera():
             flash("Validation error", "error")
     return render_template("config_camera.html", site=site(), form=form)
 
-
 @app.route("/update-code", methods=["POST"])
 def update_code():
     try:
