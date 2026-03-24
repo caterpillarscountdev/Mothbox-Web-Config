@@ -64,7 +64,7 @@ def status():
     schedule = settings.load_settings(schedule_path)
 
     schedule["days"] = [forms.days_of_week[int(x)-1] for x in schedule["weekday"].split(";")]
-    schedule["hours"] = [f'{int(x):02}:{schedule["minute"]:02}' for x in schedule["hour"].split(";")]
+    schedule["hours"] = [f'{int(x):02}:{int(schedule["minute"]):02}' for x in schedule["hour"].split(";")]
 
     device_mode = "(unknown)"
     try:
