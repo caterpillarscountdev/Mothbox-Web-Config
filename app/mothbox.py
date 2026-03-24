@@ -18,10 +18,6 @@ app.secret_key = 'notverysecretindev'
 
 here = os.path.dirname(os.path.realpath(__file__))
 
-metadata_path = settings.find_settings('site_metadata.csv')
-camera_path = settings.find_settings('camera_settings.csv')
-schedule_path = settings.find_settings()
-
 thumbs = Thumbnail(app)
 app.config['THUMBNAIL_MEDIA_ROOT'] = datasets.PHOTOS_ROOT
 app.config['THUMBNAIL_MEDIA_URL'] = '/media/'
@@ -59,23 +55,24 @@ def index():
 
 @app.route('/status')
 def status():
-    controls = settings.load_control_values()
-    metadata = settings.load_settings(metadata_path)
-    schedule = settings.load_settings(schedule_path)
+    with settings.Settings() as setts:
+        controls = setts.controls
+        metadata = setts.metadata
+        schedule = setts.schedule
 
-    schedule["days"] = [forms.days_of_week[int(x)-1] for x in schedule["weekday"].split(";")]
-    schedule["hours"] = [f'{int(x):02}:{schedule["minute"]:02}' for x in schedule["hour"].split(";")]
+        schedule["days"] = [forms.days_of_week[int(x)-1] for x in schedule["weekday"].split(";")]
+        schedule["hours"] = [f'{int(x):02}:{schedule["minute"]:02}' for x in schedule["hour"].split(";")]
 
-    device_mode = "(unknown)"
-    try:
-        device_mode = switches.mode()
-    except OSError as e:
-        flash(f"Mode check failed: {e}", "error")
-    internet = wifi.check_internet()
-    updates = check_for_updates()
-    versions = check_for_versions()
-    
-    return render_template("status.html", site=site(), status=locals())
+        device_mode = "(unknown)"
+        try:
+            device_mode = switches.mode()
+        except OSError as e:
+            flash(f"Mode check failed: {e}", "error")
+        internet = wifi.check_internet()
+        updates = check_for_updates()
+        versions = check_for_versions()
+        
+        return render_template("status.html", site=site(), status=locals())
 
 @app.route('/debug-mode', methods=["POST"])
 def debug_mode():
@@ -156,8 +153,9 @@ def data():
 def data_upload_start(dir):
     set = datasets.Dataset(dir)
     manifest = set.manifest()
-    metadata = settings.load_settings(metadata_path)
-    controls = settings.load_control_values()
+    with settings.Settings() as setts:
+        metadata = setts.metadata
+        controls = setts.controls
     device_key = metadata["DeviceKey"]
     if not device_key:
         return render_template("hx/upload_button.html", d = {"dir": dir}, msg = "You need a valid device key to upload at <a href='/config/site'>device key settings</a>")
@@ -174,7 +172,7 @@ def data_upload_start(dir):
         for f in resp["files"]:
             if f["missing"]:
                 remaining.append(f)
-        set.set_upload_remaining(remaining)
+                set.set_upload_remaining(remaining)
         return render_template("hx/upload_start.html", dataset = set)
 
     return render_template("hx/upload_button.html", d = {"dir": dir},  msg = "Upload failed to start, check your <a href='/config/site'>device key settings</a>")
@@ -256,14 +254,14 @@ def config_site():
     return render_template("config_site.html", site=site(), form=form, mmm_endpoint = current_app.config["MMM_ENDPOINT"])
 
 def config_site_data():
-    metadata = settings.load_settings(metadata_path)
-
-    return MultiDict(metadata)
+    with settings.Settings() as setts:
+        return MultiDict(setts.metadata)
     
 
 def config_site_save(d):
     d = {k: d[k] for k in forms.SiteForm()._fields.keys() if d.get(k)}
-    settings.write_settings(metadata_path, d)
+    with settings.Settings() as setts:
+        setts.update({"metadata": d})
     flash("Saved site configuration", "ok")
     
 
@@ -282,7 +280,8 @@ def config_schedule():
     return render_template("config_schedule.html", site=site(), form=form)
 
 def config_schedule_data():
-    schedule = settings.load_settings(schedule_path)
+    with settings.Settings() as setts:
+        schedule = setts.schedule
 
     schedule_for_form = MultiDict(schedule)
     schedule_for_form.setlist("hour", schedule_for_form["hour"].split(";"))
@@ -294,8 +293,9 @@ def config_schedule_save(d):
     d = {k: d[k] for k in forms.ScheduleForm()._fields.keys() if d.get(k)}
     d["hour"] = ";".join(str(x) for x in d["hour"])
     d["weekday"] = ";".join(str(x) for x in d["weekday"])
-    
-    settings.write_settings(schedule_path, d)
+
+    with settings.Settings() as setts:
+        setts.update({"schedule": d})
     
     flash("Saved schedule configuration", "ok")
 
@@ -320,41 +320,43 @@ def config_operation():
                            current_connections=wifi.current_connections())
 
 def config_operation_save(d):
-    schedule = settings.load_settings(schedule_path)
-    old_wifi = (schedule["ssid"], schedule["wifipass"])
-    new_wifi = (d["ssid"], d["wifipass"])
-    if new_wifi != old_wifi:
-        attempt = wifi.connect(*new_wifi)
-        if attempt == True:
-            success = wifi.check_internet() and " and connected" or " but <a target='_blank' href='https://nmcheck.gnome.org/'>without internet</a> so far."
-            flash(f'Added wifi for: {d["ssid"]}{success}', "ok")
-        elif attempt == False:
-            flash(f'Added wifi for: {d["ssid"]}. You will need to restart the device.', "ok")
-            settings.write_settings(schedule_path, d)
-        else:
-            flash(f'Error adding wifi: {attempt}', "error")
+    with settings.Settings() as setts:
+        schedule = setts.schedule
+        old_wifi = (schedule["ssid"], schedule["wifipass"])
+        new_wifi = (d["ssid"], d["wifipass"])
+        if new_wifi != old_wifi:
+            attempt = wifi.connect(*new_wifi)
+            if attempt == True:
+                success = wifi.check_internet() and " and connected" or " but <a target='_blank' href='https://nmcheck.gnome.org/'>without internet</a> so far."
+                flash(f'Added wifi for: {d["ssid"]}{success}', "ok")
+            elif attempt == False:
+                flash(f'Added wifi for: {d["ssid"]}. You will need to restart the device.', "ok")
+                setts.update({"schedule": d})
+            else:
+                flash(f'Error adding wifi: {attempt}', "error")
     
 
 @app.route("/config/camera", methods=["GET", "POST"])
 def config_camera():
-    camera = settings.load_settings(camera_path)
+    with settings.Settings() as setts:
+        camera = setts.camera
     
-    camera_for_form = MultiDict(camera)
+        camera_for_form = MultiDict(camera)
 
-    form = forms.CameraForm(request.form or camera_for_form)
+        form = forms.CameraForm(request.form or camera_for_form)
 
-    if request.method == 'POST':
-        if form.validate():
-            d = dict(form.data)
-            d["AwbEnable"] = int(d["AwbEnable"])
-            d["AutoCalibration"] = int(d["AutoCalibration"])
-            d["VerticalFlip"] = int(d["VerticalFlip"])
-            
-            settings.write_settings(camera_path, d)
-            flash("Saved configuration", "ok")
-        else:
-            flash("Validation error", "error")
-    return render_template("config_camera.html", site=site(), form=form)
+        if request.method == 'POST':
+            if form.validate():
+                d = dict(form.data)
+                d["AwbEnable"] = int(d["AwbEnable"])
+                d["AutoCalibration"] = int(d["AutoCalibration"])
+                d["VerticalFlip"] = int(d["VerticalFlip"])
+                
+                setts.update({"camera", d})
+                flash("Saved configuration", "ok")
+            else:
+                flash("Validation error", "error")
+        return render_template("config_camera.html", site=site(), form=form)
 
 @app.route("/update-code", methods=["POST"])
 def update_code():

@@ -1,7 +1,10 @@
 import csv
 import os
+import contextlib
+import json
 
 PI_PATH = '/home/pi/Desktop/Mothbox'
+    
 
 def relative_file(path):
     if (os.path.exists(PI_PATH)):
@@ -166,3 +169,60 @@ def write_control_values(control_values, filename="controls.txt"):
                 file.write(f"{control}={value}\n")
             else:
                 file.write(line)  # Keep other lines unchanged
+
+
+class Settings(contextlib.AbstractContextManager):
+
+    schedule = None
+    camera = None
+    metadata = None
+    controls = None
+
+    _dirty = {}
+    _paths = {
+        'schedule': find_settings('schedule_settings.csv'),
+        'camera': find_settings('camera_settings.csv'),
+        'metadata': find_settings("site_metadata.csv"),
+    }
+
+    def __init__(self, new_settings=None):
+        self.load()
+        if new_settings:
+            self.update(new_settings)
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if exc_type is None:
+            self.write()
+
+    def __str__(self):
+        return self.to_json()
+
+    def to_json(self, **kwargs):
+        return json.dumps({
+            "schedule": self.schedule,
+            "metadata": self.metadata,
+            "controls": self.controls,
+            "camera": self.camera
+        }, **kwargs)
+    
+    def load(self):
+        for key, p in self._paths.items():
+            setattr(self, key, load_settings(p))
+        setattr(self, 'controls', load_control_values())
+
+    def update(self, new_settings):
+        for key, values in new_settings.items():
+            self._dirty[key] = 1
+            a = getattr(self, key, None)
+            if a is not None:
+                a.update(values)
+                
+
+    def write(self):
+        for key, p in self._paths.items():
+            if self._dirty.get(key, None):
+                write_settings(p, getattr(self, key))
+        if self._dirty.get("controls", None):
+            write_control_values(self.controls)
+        
+        

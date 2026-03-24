@@ -15,7 +15,6 @@ formatted_time = now.strftime("%Y-%m-%d %H:%M:%S")  # Adjust the format as neede
 
 MMM_ENDPOINT = "https://mothmonitor-dev-dept-caterpillars-count.apps.cloudapps.unc.edu/"
 
-metadata_path = settings.find_settings('site_metadata.csv')
 
 def check_for_updates():
     uptodate = os.path.normpath(os.path.join(here, "gitupdate.sh"))
@@ -83,6 +82,28 @@ def run_upload(device_key, device_name):
     print(f"Uploaded {total} files for {dataset.dir}.")
     return dataset, total
 
+def do_config_post(setts, updated=False):
+    check = requests.post(MMM_ENDPOINT + "devices/check_config",
+                          params = {"key": device_key},
+                          json = {
+                              "config": setts.to_json(),
+                              "updated": updated
+                          })
+    if not check.ok:
+        print(f"Error checking MMM config: {check.status_code} {check.reason}")
+        return False
+    return check.json()
+
+def config_post(setts):
+    resp = do_config_post(setts)
+    if resp and resp.get("updates", None):
+        # Update config from server changes
+        setts.update(resp["updates"])
+        # and notify
+        do_config_post(setts, updated=True)
+        
+        
+
 
 if __name__ == "__main__":
     if switches.mode() != "ONLINE":
@@ -90,9 +111,10 @@ if __name__ == "__main__":
     if check_for_updates() == "Update Available":
         update_code()
     print(f"{formatted_time} Upload\n")
-    metadata = settings.load_settings(metadata_path)
-    controls = settings.load_control_values()
-    device_key = metadata.get("DeviceKey")
-    d, total = run_upload(device_key, controls["name"])
+    with settings.Settings() as setts:
+        # Update MMM config record
+        config_post(setts)
+        # Run an upload
+        d, total = run_upload(setts.metadata.get("DeviceKey"), setts.controls["name"])
 
 
