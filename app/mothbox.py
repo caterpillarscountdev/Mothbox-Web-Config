@@ -262,7 +262,7 @@ def config_site_data():
     
 
 def config_site_save(d):
-    d = {k: d[k] for k in forms.SiteForm()._fields.keys() if d.get(k)}
+    d = {k: d[k] for k in forms.SiteForm()._fields.keys() if d.get(k, None) is not None}
     settings.write_settings(metadata_path, d)
     flash("Saved site configuration", "ok")
     
@@ -291,7 +291,7 @@ def config_schedule_data():
     
 
 def config_schedule_save(d):
-    d = {k: d[k] for k in forms.ScheduleForm()._fields.keys() if d.get(k)}
+    d = {k: d[k] for k in forms.ScheduleForm()._fields.keys() if d.get(k, None) is not None}
     d["hour"] = ";".join(str(x) for x in d["hour"])
     d["weekday"] = ";".join(str(x) for x in d["weekday"])
     
