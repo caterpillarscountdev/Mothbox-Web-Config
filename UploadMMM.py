@@ -4,6 +4,7 @@ import runpy
 
 runpy.run_path(".venv/bin/activate_this.py")
 
+import os
 import requests
 import subprocess
 
@@ -13,12 +14,17 @@ from datetime import datetime
 now = datetime.now()
 formatted_time = now.strftime("%Y-%m-%d %H:%M:%S")  # Adjust the format as needed
 
-MMM_ENDPOINT = "https://mothmonitor-dev-dept-caterpillars-count.apps.cloudapps.unc.edu/"
+MMM_ENDPOINT = os.environ.get("MMM_ENDPOINT", "https://mothmonitor-dev-dept-caterpillars-count.apps.cloudapps.unc.edu/")
 
 
 def check_for_updates():
     uptodate = os.path.normpath(os.path.join(here, "gitupdate.sh"))
     output = subprocess.run(["sudo", "-u", "pi", uptodate, "uptodate"], capture_output=True)
+    return output.stdout.strip().decode("utf-8")
+
+def check_for_versions():
+    uptodate = os.path.normpath(os.path.join(here, "../", "gitupdate.sh"))
+    output = subprocess.run(["sudo", "-u", "pi", uptodate, "versions"], capture_output=True)
     return output.stdout.strip().decode("utf-8")
 
 
@@ -82,25 +88,27 @@ def run_upload(device_key, device_name):
     print(f"Uploaded {total} files for {dataset.dir}.")
     return dataset, total
 
-def do_config_post(setts, updated=False):
+def do_config_post(setts, version=None, logs=None):
+    body = {"config": setts.to_json()}
+    if version:
+        body["code_version"] = version
+    if logs:
+        body["recent_logs"] = logs
     check = requests.post(MMM_ENDPOINT + "devices/check_config",
                           params = {"key": device_key},
-                          json = {
-                              "config": setts.to_json(),
-                              "updated": updated
-                          })
+                          json = body)
     if not check.ok:
         print(f"Error checking MMM config: {check.status_code} {check.reason}")
         return False
     return check.json()
 
-def config_post(setts):
-    resp = do_config_post(setts)
-    if resp and resp.get("updates", None):
-        # Update config from server changes
-        setts.update(resp["updates"])
+def config_post(setts, version=None, logs=None):
+    resp = do_config_post(setts, version, logs)
+    if resp and resp.get("updated_config", None):
+        #Update config from server changes
+        setts.update(resp["updated_config"])
         # and notify
-        do_config_post(setts, updated=True)
+        do_config_post(setts)
         
         
 
@@ -112,8 +120,9 @@ if __name__ == "__main__":
         update_code()
     print(f"{formatted_time} Upload\n")
     with settings.Settings() as setts:
+        version = check_for_versions()
         # Update MMM config record
-        config_post(setts)
+        config_post(setts, version, {})
         # Run an upload
         d, total = run_upload(setts.metadata.get("DeviceKey"), setts.controls["name"])
 
