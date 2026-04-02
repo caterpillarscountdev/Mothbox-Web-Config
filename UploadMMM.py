@@ -19,6 +19,7 @@ MMM_ENDPOINT = "https://mothmonitor-dev-dept-caterpillars-count.apps.cloudapps.u
 metadata_path = settings.find_settings('site_metadata.csv')
 
 def check_for_updates():
+    here = os.path.dirname(os.path.realpath(__file__))
     uptodate = os.path.normpath(os.path.join(here, "gitupdate.sh"))
     output = subprocess.run(["sudo", "-u", "pi", uptodate, "uptodate"], capture_output=True)
     return output.stdout.strip().decode("utf-8")
