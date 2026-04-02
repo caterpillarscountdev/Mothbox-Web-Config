@@ -15,7 +15,7 @@
   <p>Mode switch is <em class="status-label">{{status.device_mode}}</em>
     {%if status.device_mode == "ONLINE"%}(Yellow) which will keep the internet connected but not capture new photos.{%endif%}
     {%if status.device_mode == "FIELD"%} (Green) ready to capture new photos but will shutdown between for energy saving.{%endif%}</p>
-  <p>Device name <em class="status-label">{{ status.controls.name }}</em> running software version <em class="status-label">{{ status.versions }}</em>.</p>
+  <p>Device name <em class="status-label">{{ status.controls.name }}</em> running software version <em class="status-label">{{ status.versions }}</em>. </p>
   <p>
     Internet is <em class="status-label">{% if status.internet %}Connected{% else %}Offline{%endif %}</em>
     <a href="{{url_for('config_operation')}}">Setup wifi</a>
