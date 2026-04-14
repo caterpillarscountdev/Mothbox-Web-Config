@@ -9,7 +9,8 @@
 
 <form name="config" autocomplete="off" method="POST">
   <fieldset>
-    <label>When to activate</label>
+    <label>Schedule to activate</label>
+    <em> (Ctrl-click or Cmd-click to select multiple)</em>
     <div class="flex">
       {{ render_field(form.weekday) }}
       {{ render_field(form.hour) }}
