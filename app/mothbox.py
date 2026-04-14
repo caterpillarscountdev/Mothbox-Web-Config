@@ -30,6 +30,17 @@ app.config['THUMBNAIL_MEDIA_THUMBNAIL_URL'] = '/media/thumbnails/'
 
 app.config['MMM_ENDPOINT'] = os.environ.get("MMM_ENDPOINT", "https://mothmonitor-dev-dept-caterpillars-count.apps.cloudapps.unc.edu/")
 
+@app.template_filter()
+def format_datetime(value, format='date'):
+    if not value:
+        return ""
+    if format == 'date':
+        format="%b %d, %Y"
+    elif format == 'datetime':
+        format="%b %d, %Y %I:%M %p"
+    elif format == 'daytime':
+        format="%A %H:%M"
+    return value.strftime(format)
 
 def site():
     with app.app_context():
@@ -65,6 +76,7 @@ def status():
 
     schedule["days"] = [forms.days_of_week[int(x)-1] for x in schedule["weekday"].split(";")]
     schedule["hours"] = [f'{int(x):02}:{int(schedule["minute"]):02}' for x in schedule["hour"].split(";")]
+    schedule["now"] = datetime.now()
 
     device_mode = "(unknown)"
     try:
