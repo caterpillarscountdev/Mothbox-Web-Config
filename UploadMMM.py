@@ -1,10 +1,14 @@
 #!/usr/bin/env python3
 
 import runpy
-
-runpy.run_path(".venv/bin/activate_this.py")
-
 import os
+
+LOCAL_DEV = os.environ.get("LOCAL_DEV")
+DEVICE_KEY = os.environ.get("DEVICE_KEY")
+
+if not LOCAL_DEV:
+    runpy.run_path(".venv/bin/activate_this.py")
+
 import requests
 import subprocess
 
@@ -88,7 +92,7 @@ def run_upload(device_key, device_name):
     print(f"Uploaded {total} files for {dataset.dir}.")
     return dataset, total
 
-def do_config_post(setts, version=None, logs=None):
+def do_config_post(devie_key, setts, version=None, logs=None):
     body = {"config": setts.to_json()}
     if version:
         body["code_version"] = version
@@ -102,28 +106,32 @@ def do_config_post(setts, version=None, logs=None):
         return False
     return check.json()
 
-def config_post(setts, version=None, logs=None):
-    resp = do_config_post(setts, version, logs)
+def config_post(device_key, setts, version=None, logs=None):
+    resp = do_config_post(device_key, setts, version, logs)
     if resp and resp.get("updated_config", None):
         #Update config from server changes
         setts.update(resp["updated_config"])
         # and notify
-        do_config_post(setts)
+        do_config_post(device_key, setts)
         
         
 
 
 if __name__ == "__main__":
-    if switches.mode() != "ONLINE":
-        exit()
-    if check_for_updates() == "Update Available":
-        update_code()
+    version = "LOCAL"
+    if not LOCAL_DEV:
+        if switches.mode() != "ONLINE":
+            exit()
+        if check_for_updates() == "Update Available":
+            update_code()
+        version = check_for_versions()
+            
     print(f"{formatted_time} Upload\n")
     with settings.Settings() as setts:
-        version = check_for_versions()
+        device_key = DEVICE_KEY or setts.metadata.get("DeviceKey")
         # Update MMM config record
-        config_post(setts, version, {})
+        config_post(device_key, setts, version, {})
         # Run an upload
-        d, total = run_upload(setts.metadata.get("DeviceKey"), setts.controls["name"])
+        #d, total = run_upload(device_key, setts.controls["name"])
 
 
