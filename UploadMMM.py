@@ -134,6 +134,6 @@ if __name__ == "__main__":
         # Update MMM config record
         config_post(device_key, setts, version, {})
         # Run an upload
-        #d, total = run_upload(device_key, setts.controls["name"])
+        d, total = run_upload(device_key, setts.controls["name"])
 
 
