@@ -9,13 +9,16 @@
 <a href="{{url_for('setup')}}">Initial setup configuration</a>
 
 <div class="status">
-  <p>Scheduled to operate on <em class="status-label">{{ ", ".join(status.schedule.days)}}</em> at <em class="status-label">{{ ", ".join(status.schedule.hours)}}</em> for <em class="status-label">{{status.schedule.runtime}}</em> minutes. <a href="{{url_for('config_schedule')}}">Setup schedule</a></p>
+  <p> The current time is <em class="status-label">{{status.schedule.now|format_datetime("daytime")}}</em></p>
+  
+  <p>Scheduled to operate on <em class="status-label">{{ ", ".join(status.schedule.days)}}</em> at <em class="status-label">{{ ", ".join(status.schedule.hours)}}</em> for <em class="status-label">{{status.schedule.runtime}}</em> minutes, taking photos every <em class="status-label">{{status.schedule.camera_interval}}</em> minutes. <a href="{{url_for('config_schedule')}}">Setup schedule</a></p>
+
   <p>Assigned to the site <em class="status-label">{{ status.metadata.SiteName or "(No Site Assigned)"}}</em><a href="{{url_for('config_site')}}">Setup site</a>
   </p>
   <p>Mode switch is <em class="status-label">{{status.device_mode}}</em>
     {%if status.device_mode == "ONLINE"%}(Yellow) which will keep the internet connected but not capture new photos.{%endif%}
     {%if status.device_mode == "FIELD"%} (Green) ready to capture new photos but will shutdown between for energy saving.{%endif%}</p>
-  <p>Device name <em class="status-label">{{ status.controls.name }}</em> running software version <em class="status-label">{{ status.versions }}</em> and this config software has <em class="status-label">{{ status.updates }}</em>.</p>
+  <p>Device name <em class="status-label">{{ status.controls.name }}</em> running software version <em class="status-label">{{ status.versions }}</em>. </p>
   <p>
     Internet is <em class="status-label">{% if status.internet %}Connected{% else %}Offline{%endif %}</em>
     <a href="{{url_for('config_operation')}}">Setup wifi</a>

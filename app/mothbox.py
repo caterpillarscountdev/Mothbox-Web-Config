@@ -26,6 +26,17 @@ app.config['THUMBNAIL_MEDIA_THUMBNAIL_URL'] = '/media/thumbnails/'
 
 app.config['MMM_ENDPOINT'] = os.environ.get("MMM_ENDPOINT", "https://mothmonitor-dev-dept-caterpillars-count.apps.cloudapps.unc.edu/")
 
+@app.template_filter()
+def format_datetime(value, format='date'):
+    if not value:
+        return ""
+    if format == 'date':
+        format="%b %d, %Y"
+    elif format == 'datetime':
+        format="%b %d, %Y %I:%M %p"
+    elif format == 'daytime':
+        format="%A %H:%M"
+    return value.strftime(format)
 
 def site():
     with app.app_context():
@@ -61,7 +72,8 @@ def status():
         schedule = setts.schedule
 
         schedule["days"] = [forms.days_of_week[int(x)-1] for x in schedule["weekday"].split(";")]
-        schedule["hours"] = [f'{int(x):02}:{schedule["minute"]:02}' for x in schedule["hour"].split(";")]
+        schedule["hours"] = [f'{int(x):02}:{int(schedule["minute"]):02}' for x in schedule["hour"].split(";")]
+        schedule["now"] = datetime.now()
 
         device_mode = "(unknown)"
         try:
@@ -259,7 +271,7 @@ def config_site_data():
     
 
 def config_site_save(d):
-    d = {k: d[k] for k in forms.SiteForm()._fields.keys() if d.get(k)}
+    d = {k: d[k] for k in forms.SiteForm()._fields.keys() if d.get(k, None) is not None}
     with settings.Settings() as setts:
         setts.update({"metadata": d})
     flash("Saved site configuration", "ok")
@@ -290,7 +302,7 @@ def config_schedule_data():
     
 
 def config_schedule_save(d):
-    d = {k: d[k] for k in forms.ScheduleForm()._fields.keys() if d.get(k)}
+    d = {k: d[k] for k in forms.ScheduleForm()._fields.keys() if d.get(k, None) is not None}
     d["hour"] = ";".join(str(x) for x in d["hour"])
     d["weekday"] = ";".join(str(x) for x in d["weekday"])
 

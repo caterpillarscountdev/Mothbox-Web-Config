@@ -11,6 +11,7 @@ if not LOCAL_DEV:
 
 import requests
 import subprocess
+import os
 
 from app.lib import settings, datasets, switches
 from datetime import datetime
@@ -22,6 +23,7 @@ MMM_ENDPOINT = os.environ.get("MMM_ENDPOINT", "https://mothmonitor-dev-dept-cate
 
 
 def check_for_updates():
+    here = os.path.dirname(os.path.realpath(__file__))
     uptodate = os.path.normpath(os.path.join(here, "gitupdate.sh"))
     output = subprocess.run(["sudo", "-u", "pi", uptodate, "uptodate"], capture_output=True)
     return output.stdout.strip().decode("utf-8")

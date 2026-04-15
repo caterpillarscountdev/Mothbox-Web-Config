@@ -47,7 +47,7 @@ class CameraForm(Form):
 
 class SiteForm(Form):
     SiteName = StringField("Site Name")
-    SiteCrew = StringField("Site Host Contact")
+    SiteCrew = StringField("Site Host Contact (email)")
     SiteLat = FloatField("Lat.", render_kw={"size": 7})
     SiteLon = FloatField("Lon.", render_kw={"size": 7})
     DeviceKey = StringField("Device Upload Key")
