@@ -22,14 +22,13 @@ formatted_time = now.strftime("%Y-%m-%d %H:%M:%S")  # Adjust the format as neede
 MMM_ENDPOINT = os.environ.get("MMM_ENDPOINT", "https://mothmonitor-dev-dept-caterpillars-count.apps.cloudapps.unc.edu/")
 
 here = os.path.dirname(os.path.realpath(__file__))
+uptodate = os.path.normpath(os.path.join(here, "gitupdate.sh"))
 
 def check_for_updates():
-    uptodate = os.path.normpath(os.path.join(here, "gitupdate.sh"))
     output = subprocess.run(["sudo", "-u", "pi", uptodate, "uptodate"], capture_output=True)
     return output.stdout.strip().decode("utf-8")
 
 def check_for_versions():
-    uptodate = os.path.normpath(os.path.join(here, "../", "gitupdate.sh"))
     output = subprocess.run(["sudo", "-u", "pi", uptodate, "versions"], capture_output=True)
     return output.stdout.strip().decode("utf-8")
 
