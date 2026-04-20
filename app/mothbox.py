@@ -26,6 +26,7 @@ app.config['THUMBNAIL_MEDIA_THUMBNAIL_URL'] = '/media/thumbnails/'
 
 app.config['MMM_ENDPOINT'] = os.environ.get("MMM_ENDPOINT", "https://mothmonitor-dev-dept-caterpillars-count.apps.cloudapps.unc.edu/")
 
+
 @app.template_filter()
 def format_datetime(value, format='date'):
     if not value:
@@ -295,6 +296,8 @@ def config_schedule_data():
     with settings.Settings() as setts:
         schedule = setts.schedule
 
+    schedule["timezone"] = tz_name()
+    
     schedule_for_form = MultiDict(schedule)
     schedule_for_form.setlist("hour", schedule_for_form["hour"].split(";"))
     schedule_for_form.setlist("weekday", schedule_for_form["weekday"].split(";"))
@@ -306,6 +309,11 @@ def config_schedule_save(d):
     d["hour"] = ";".join(str(x) for x in d["hour"])
     d["weekday"] = ";".join(str(x) for x in d["weekday"])
 
+    if d["timezone"]:
+        if d["timezone"] != tz_name():
+            tz_set(d["timezone"])
+        del d["timezone"]
+    
     with settings.Settings() as setts:
         setts.update({"schedule": d})
     
@@ -416,3 +424,15 @@ def log_tail(log):
     
 def log_get_path(log):
     return os.path.normpath(os.path.join(here, "../../logs/", os.path.basename(log)+"_log.txt"))
+
+
+def tz_name():
+    output = subprocess.run(f"timedatectl show --property=Timezone --value".split(" "), capture_output=True)
+    return output.stdout.strip().decode("utf-8")
+
+
+def tz_set(timezone):
+    uptodate = os.path.normpath(os.path.join(here, "../", "gitupdate.sh"))
+    output = subprocess.run(["sudo", "-u", "pi", uptodate, "settz", timezone], capture_output=True)
+    return output.stdout.strip().decode("utf-8")
+    

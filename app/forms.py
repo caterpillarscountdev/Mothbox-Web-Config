@@ -1,6 +1,12 @@
 from wtforms import Form, validators
 from wtforms import BooleanField, StringField, IntegerField, FloatField, SelectField, SelectMultipleField
 
+import zoneinfo
+
+p_zones = ["America/New_York", "America/Chicago", "America/Denver", "America/Phoenix", "America/Los_Angeles"]
+
+zones = sorted(zoneinfo.available_timezones(), key=lambda x: (x in p_zones and str(p_zones.index(x))+x) or "9"+x)
+
 days_of_week = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 
 class ScheduleForm(Form):
@@ -12,8 +18,8 @@ class ScheduleForm(Form):
                                   coerce=int,
                                   choices = list(zip([x for x in range(1,8)], days_of_week)),
                                   render_kw={"size": 7})
-
-    utc_off = StringField("UTC Offset")
+    timezone = SelectField("Timezone",
+                           choices = zones)
     minute = IntegerField("Start Minute")
     camera_interval = IntegerField("Photo interval (minutes)")
     runtime = IntegerField("Runtime (minutes)")
@@ -48,8 +54,8 @@ class CameraForm(Form):
 class SiteForm(Form):
     SiteName = StringField("Site Name")
     SiteCrew = StringField("Site Host Contact (email)")
-    SiteLat = FloatField("Lat.", render_kw={"size": 7})
-    SiteLon = FloatField("Lon.", render_kw={"size": 7})
+    SiteLat = FloatField("Lat.", [validators.Optional()], render_kw={"size": 7})
+    SiteLon = FloatField("Lon.", [validators.Optional()], render_kw={"size": 7})
     DeviceKey = StringField("Device Upload Key")
     LandingSheet = SelectField("Landing Sheet Dimensions",
                                choices = ["12x16 in", "8x12 in"])
@@ -64,7 +70,6 @@ class SetupForm(ScheduleForm, OperationForm, SiteForm):
     ScaleBarPresent = None
     ColorStandardPresent = None
 
-    utc_off = None
     minute = None
     camera_interval = None
     runtime = None

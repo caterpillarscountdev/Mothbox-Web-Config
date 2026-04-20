@@ -41,6 +41,10 @@ case "$1" in
     "uptodate")
         uptodate
     ;;
+    "settz")
+        sudo timedatectl set-timezone $2
+        echo "TZ set to $2"
+    ;;
     *)
         echo "no command; did you mean versions or uptodate?"
         exit 1
