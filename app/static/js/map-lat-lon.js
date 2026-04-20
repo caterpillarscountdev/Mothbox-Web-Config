@@ -41,6 +41,7 @@ MapFindMeButton = function (map) {
       position = await getCurrentPosition();
     } catch (e) {
       alert("Unable to get your location. Please confirm Location Services are enabled and allow this site to access your location.");
+      console.log("Unable to get your location. Please confirm Location Services are enabled and allow this site to access your location.");
       //position = {coords:{latitude:32.5468,longitude:-84.3750, accuracy: 2}}
       return
     }
@@ -96,9 +97,12 @@ async function createMap() {
     fullscreenControl: false,
     disableDoubleClickZoom: true
   });
+  map.panTo(new google.maps.LatLng(35.90525543722337, -79.04669882593295))
 
-  setMarker();
-  MapFindMeButton(map);
+  setTimeout(() => {
+    setMarker();
+    MapFindMeButton(map);
+  }, 500);
 }
 
 window.createMap = createMap;
