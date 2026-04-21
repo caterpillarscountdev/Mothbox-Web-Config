@@ -75,7 +75,7 @@ def status():
         schedule["days"] = [forms.days_of_week[int(x)-1] for x in schedule["weekday"].split(";")]
         schedule["hours"] = [f'{int(x):02}:{int(schedule["minute"]):02}' for x in schedule["hour"].split(";")]
         schedule["now"] = datetime.now()
-        schedule["TZ"] = os.environ['TZ']
+        schedule["TZ"] = os.environ
 
         device_mode = "(unknown)"
         try:
