@@ -40,8 +40,7 @@ MapFindMeButton = function (map) {
     try {
       position = await getCurrentPosition();
     } catch (e) {
-      alert("Unable to get your location. Please confirm Location Services are enabled and allow this site to access your location.");
-      console.log("Unable to get your location. Please confirm Location Services are enabled and allow this site to access your location.");
+      alert("Unable to get your location. Please confirm Location Services are enabled and allow this site to access your location. Or search for a place by address.");
       //position = {coords:{latitude:32.5468,longitude:-84.3750, accuracy: 2}}
       return
     }
@@ -83,6 +82,35 @@ MapFindMeButton = function (map) {
   })
 }
 
+MapSearchBox = function (map) {
+  const wrap = document.createElement("div")
+  wrap.setAttribute("class", "map-button-wrap");
+  const input = document.createElement("input");
+  input.setAttribute("class", "map-button");
+  input.style.textAlign = "left";
+  input.setAttribute("placeholder", "Search for a place")
+  wrap.appendChild(input)
+  const searchBox = new google.maps.places.SearchBox(input);
+  
+  map.controls[google.maps.ControlPosition.TOP_RIGHT].push(wrap);
+
+  searchBox.addListener("places_changed", () => {
+    const places = searchBox.getPlaces();
+
+    if (places.length == 0) {
+      return;
+    }
+
+    const place = places[0];
+    if (!place.geometry || !place.geometry.location) {
+      console.log("Returned place contains no geometry");
+      return;
+    }
+    map.panTo(place.geometry.location);
+  });
+}
+                       
+
 async function createMap() {
   const { Map, InfoWindow } = await google.maps.importLibrary("maps");
   map = new Map(document.getElementById("map-canvas"), {
@@ -97,12 +125,14 @@ async function createMap() {
     fullscreenControl: false,
     disableDoubleClickZoom: true
   });
-  map.panTo(new google.maps.LatLng(35.90525543722337, -79.04669882593295))
+
 
   setTimeout(() => {
     setMarker();
     MapFindMeButton(map);
-  }, 500);
+    MapSearchBox(map);
+  
+  }, 0);
 }
 
 window.createMap = createMap;
@@ -126,7 +156,8 @@ async function setMarker() {
     try {
       position = await getCurrentPosition()
     } catch (e) {
-      return
+      // Default to UNC, why not
+      position = {coords: {latitude: 35.905, longitude: -79.046}};
     }
     loc = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
     updateForm(loc.lat(), loc.lng());
