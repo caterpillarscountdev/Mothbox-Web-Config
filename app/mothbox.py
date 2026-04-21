@@ -236,7 +236,7 @@ def setup():
             flash(f"Validation error: {','.join([f.name for f in form._fields.values() if f.errors])}", "error")
     return render_template("setup.html", site=site(), form=form,
                            mmm_endpoint = current_app.config["MMM_ENDPOINT"],
-                           wifi_devices=wifi.wifi_devices(),
+                           wifi_devices=wifi.wifi_device_macs(),
                            current_connections=wifi.current_connections()
                            )
         
@@ -328,7 +328,7 @@ def config_operation():
         else:
             flash("Validation error", "error")
     return render_template("config_operation.html", site=site(), form=form,
-                           wifi_devices=wifi.wifi_devices(),
+                           wifi_devices=wifi.wifi_device_macs(),
                            current_connections=wifi.current_connections())
 
 def config_operation_save(d):

@@ -13,6 +13,14 @@ def wifi_devices():
     result = subprocess.check_output(["sudo", "nmcli", "-g", "type,device", "device"], text=True)
     return [y for x,y in [k.split(':') for k in result.splitlines()] if x == 'wifi']
 
+def wifi_device_macs():
+    ret = {}
+    for y in wifi_devices():
+        ret[y] = subprocess.check_output("nmcli dev show " + y + " | awk '/HWADDR/ {print $2}'", shell=True).strip().decode("utf-8")
+    return ret
+
+
+
 def wifi_networks(ifname="wlan1"):
     try:
         result = subprocess.check_output(["sudo", "nmcli", "--colors", "no", "-g", "ssid,bars", "device", "wifi", "list", "--rescan", "yes", "ifname", ifname], encoding="utf-8", env={"TERM": "xterm", "LANG": "en_GB.UTF-8"})
