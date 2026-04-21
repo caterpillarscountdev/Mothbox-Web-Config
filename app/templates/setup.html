@@ -52,8 +52,8 @@
     </label>
     <p>Currently connected to:</p>
     <ul>
-      {% for d,s in current_connections.items()%}
-      <li><strong>{{s}}</strong> on <em>{{d}}</em> at <em>{{wifi_devices.get(d, None)}}</em></li>
+      {% for d,m in wifi_devices.items()%}
+      <li><strong>{{current_connections.get(d, "")}}</strong> on <em>{{d}}</em> at <em>{{m}}</em></li>
       {%endfor%}
     </ul>
     {% if wifi_devices|length == 1 %}
