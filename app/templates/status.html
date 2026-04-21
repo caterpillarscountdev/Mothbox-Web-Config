@@ -9,7 +9,7 @@
 <a href="{{url_for('setup')}}">Initial setup configuration</a>
 
 <div class="status">
-  <p> The current time is <em class="status-label">{{status.schedule.now|format_datetime("daytime")}}</em> {{status.schedule.TZ}}</p>
+  <p> The current time is <em class="status-label">{{status.schedule.now|format_datetime("daytime")}}</em> ({{status.schedule.timezone}})</p>
   
   <p>Scheduled to operate on <em class="status-label">{{ ", ".join(status.schedule.days)}}</em> at <em class="status-label">{{ ", ".join(status.schedule.hours)}}</em> for <em class="status-label">{{status.schedule.runtime}}</em> minutes, taking photos every <em class="status-label">{{status.schedule.camera_interval}}</em> minutes. <a href="{{url_for('config_schedule')}}">Setup schedule</a></p>
 

@@ -4,8 +4,9 @@ from flask_thumbnails import Thumbnail
 from werkzeug.datastructures import MultiDict
 
 import subprocess
-import os, os.path
+import os.path
 from datetime import datetime
+import pytz
 import requests
 
 
@@ -74,9 +75,8 @@ def status():
 
         schedule["days"] = [forms.days_of_week[int(x)-1] for x in schedule["weekday"].split(";")]
         schedule["hours"] = [f'{int(x):02}:{int(schedule["minute"]):02}' for x in schedule["hour"].split(";")]
-        os.environ['TZ'] = tz_name()
-        schedule["now"] = datetime.now()
-        schedule["TZ"] = os.environ
+        schedule["timezone"] = tz_name()
+        schedule["now"] = datetime.now().astimezone(pytz.timezone(schedule["timezone"]))
 
         device_mode = "(unknown)"
         try:
