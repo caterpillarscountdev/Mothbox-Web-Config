@@ -4,7 +4,7 @@ from flask_thumbnails import Thumbnail
 from werkzeug.datastructures import MultiDict
 
 import subprocess
-import os.path
+import os, os.path
 from datetime import datetime
 import requests
 
@@ -75,6 +75,7 @@ def status():
         schedule["days"] = [forms.days_of_week[int(x)-1] for x in schedule["weekday"].split(";")]
         schedule["hours"] = [f'{int(x):02}:{int(schedule["minute"]):02}' for x in schedule["hour"].split(";")]
         schedule["now"] = datetime.now()
+        schedule["TZ"] = os.environ['TZ']
 
         device_mode = "(unknown)"
         try:
@@ -433,6 +434,7 @@ def tz_name():
 
 def tz_set(timezone):
     uptodate = os.path.normpath(os.path.join(here, "../", "gitupdate.sh"))
+    os.environ['TZ'] = timezone
     output = subprocess.run(["sudo", "-u", "pi", uptodate, "settz", timezone], capture_output=True)
     return output.stdout.strip().decode("utf-8")
     
