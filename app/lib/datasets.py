@@ -18,7 +18,7 @@ class Dataset:
         return [{"filename": os.path.basename(f),
                  "size": os.stat(f).st_size,
                  "type":mimetypes.guess_type(f)[0]}
-                for f in sorted(glob.glob(os.path.join(self.path, "*.jpg")) + glob.glob(os.path.join(self.path, "*.zip")))]    
+                for f in sorted(glob.glob(os.path.join(self.path, "*.jpg")) + glob.glob(os.path.join(self.path, "*.zip")) + glob.glob(os.path.join(self.path, "*.json")))]
 
     def file_contents(self, filename):
         with open(os.path.join(self.path, filename), 'rb') as f:
