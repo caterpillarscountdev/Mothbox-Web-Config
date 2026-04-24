@@ -22,7 +22,7 @@ class ScheduleForm(Form):
                            choices = zones)
     minute = IntegerField("Start Minute")
     camera_interval = IntegerField("Photo interval (minutes)")
-    runtime = IntegerField("Runtime (minutes)")
+    runtime = IntegerField("Runtime (minutes, if > 60 only select starting hour(s) above)")
     onlyflash = BooleanField("Only use Flash to attract")
     attractOffPhoto = BooleanField("Turn Attract off during photo capture")
     attracttwo = BooleanField("Enable second attract strip (higher power)")
@@ -71,8 +71,6 @@ class SetupForm(ScheduleForm, OperationForm, SiteForm):
     ColorStandardPresent = None
 
     minute = None
-    camera_interval = None
-    runtime = None
     onlyflash = None
     attractOffPhoto = None
     attracttwo = None

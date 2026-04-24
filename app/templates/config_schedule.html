@@ -16,7 +16,6 @@
       {{ render_field(form.hour) }}
     </div>
     <p>Attract light will turn on at Start Minute and stay on for Runtime for each hour/day selected above. The camera and flash happen every Interval from the top of the hour, so if you set start time to 5, interval to 10, and runtime to 30, the session will run from :05 to :35 with photos at :10, :20, and :30. If Interval falls on Start Time or Start Time is 0, the next Interval will be the first photo.</p>
-    <p>Currently Start Minute + Runtime should sum to less than 60 - photos are captured during the configured hour, not carried over into the subsequent hour.</p>
     {{ render_field(form.minute) }}
     {{ render_field(form.camera_interval) }}
     {{ render_field(form.runtime) }}
