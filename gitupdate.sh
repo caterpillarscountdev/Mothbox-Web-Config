@@ -45,6 +45,43 @@ case "$1" in
         sudo timedatectl set-timezone $2
         echo "TZ set to $2"
     ;;
+    "diagnostics")
+        df -hl
+        echo ">>> CRON"
+        crontab -u pi -l | grep ^[^#]
+        echo ">>> ERRORS"
+        tail /var/log/apache2/error.log
+        echo ">>> DIRS"
+        ls -l $FW_PATH
+        ls -l $FW_PATH/logs
+        ls -l $FW_PATH/photos
+        echo ">>> GIT"
+        echo $FW_PATH
+        cd $FW_PATH
+        git status
+        git log -1
+        echo $WEB_PATH
+        cd $WEB_PATH
+        git status
+        git log -1
+    ;;
+    "reset")
+        echo ">>> PERMISSIONS"
+        sudo chown -R pi:pi $FW_PATH/.git
+        sudo chown -R pi:pi $FW_PATH/logs
+        sudo chown -R pi:pi $FW_PATH/photos
+        ls -l $FW_PATH
+        ls -l $FW_PATH/logs
+        ls -l $FW_PATH/photos
+        chmod u+w $FW_PATH/logs/*
+        echo ">>> GIT"
+        echo $FW_PATH
+        cd $FW_PATH
+        git reset --hard HEAD
+        echo $WEB_PATH
+        cd $WEB_PATH
+        git reset --hard HEAD
+    ;;
     *)
         echo "no command; did you mean versions or uptodate?"
         exit 1

@@ -158,7 +158,16 @@ def logs(log):
             mtime = None
         logs[log] = mtime
     return render_template("view_logs.html", site=site(), logs=logs)
-        
+
+
+@app.route('/diagnostics')
+def diagnostics():
+    return '<pre>' + run_gitupdate("diagnostics") + '</pre>'
+
+@app.route('/diagnostics/reset', methods=["POST"])
+def diagnostics_reset():
+    return '<pre>' + run_gitupdate("reset") + '</pre>'
+
 @app.route('/data')
 def data():
     sets = datasets.get_datasets()
@@ -407,16 +416,17 @@ def prepare_form(request, form, source):
     return form(request.form or for_form)
 
 
+def run_gitupdate(*cmd):
+    uptodate = os.path.normpath(os.path.join(here, "../", "gitupdate.sh"))
+    output = subprocess.run(["sudo", "-u", "pi", uptodate, *cmd], capture_output=True)
+    return output.stdout.strip().decode("utf-8")
+    
     
 def check_for_updates():
-    uptodate = os.path.normpath(os.path.join(here, "../", "gitupdate.sh"))
-    output = subprocess.run(["sudo", "-u", "pi", uptodate, "uptodate"], capture_output=True)
-    return output.stdout.strip().decode("utf-8")
+    return run_gitupdate("uptodate")
 
 def check_for_versions():
-    uptodate = os.path.normpath(os.path.join(here, "../", "gitupdate.sh"))
-    output = subprocess.run(["sudo", "-u", "pi", uptodate, "versions"], capture_output=True)
-    return output.stdout.strip().decode("utf-8")
+    return run_gitupdate("versions")
 
 def log_tail(log):
     # basename to sanitize input to intended directory
@@ -434,7 +444,6 @@ def tz_name():
 
 
 def tz_set(timezone):
-    uptodate = os.path.normpath(os.path.join(here, "../", "gitupdate.sh"))
-    output = subprocess.run(["sudo", "-u", "pi", uptodate, "settz", timezone], capture_output=True)
-    return output.stdout.strip().decode("utf-8")
+    return run_gitupdate("settz", timezone)
     
+
