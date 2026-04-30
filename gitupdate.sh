@@ -47,11 +47,15 @@ case "$1" in
     ;;
     "diagnostics")
         df -hl
-        crontab -u pi -l
+        echo ">>> CRON"
+        crontab -u pi -l | grep ^[^#]
+        echo ">>> ERRORS"
         tail /var/log/apache2/error.log
+        echo ">>> DIRS"
         ls -l $FW_PATH
         ls -l $FW_PATH/logs
         ls -l $FW_PATH/photos
+        echo ">>> GIT"
         echo $FW_PATH
         cd $FW_PATH
         git status
