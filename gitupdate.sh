@@ -69,6 +69,7 @@ case "$1" in
         echo ">>> PERMISSIONS"
         sudo chown -R pi:pi $FW_PATH/.git
         sudo chown -R pi:pi $FW_PATH/logs
+        sudo chown -R pi:pi $FW_PATH/photos
         ls -l $FW_PATH
         ls -l $FW_PATH/logs
         chmod u+w $FW_PATH/logs/*
