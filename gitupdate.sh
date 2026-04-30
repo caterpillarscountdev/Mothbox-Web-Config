@@ -45,6 +45,19 @@ case "$1" in
         sudo timedatectl set-timezone $2
         echo "TZ set to $2"
     ;;
+    "diagnostics")
+        df -hl
+        crontab -u pi -l
+        ls -l $FW_PATH
+        ls -l $FW_PATH/logs
+        ls -l $FW_PATH/photos
+        cd $FW_PATH
+        git status
+        git log --decorate | head -20
+        cd $WEB_PATH
+        git status
+        git log --decorate | head -20
+    ;;
     *)
         echo "no command; did you mean versions or uptodate?"
         exit 1

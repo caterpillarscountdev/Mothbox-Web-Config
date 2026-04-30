@@ -412,16 +412,17 @@ def prepare_form(request, form, source):
     return form(request.form or for_form)
 
 
+def run_gitupdate(*cmd):
+    uptodate = os.path.normpath(os.path.join(here, "../", "gitupdate.sh"))
+    output = subprocess.run(["sudo", "-u", "pi", uptodate, *cmd], capture_output=True)
+    return output.stdout.strip().decode("utf-8")
+    
     
 def check_for_updates():
-    uptodate = os.path.normpath(os.path.join(here, "../", "gitupdate.sh"))
-    output = subprocess.run(["sudo", "-u", "pi", uptodate, "uptodate"], capture_output=True)
-    return output.stdout.strip().decode("utf-8")
+    return run_gitupdate("uptodate")
 
 def check_for_versions():
-    uptodate = os.path.normpath(os.path.join(here, "../", "gitupdate.sh"))
-    output = subprocess.run(["sudo", "-u", "pi", uptodate, "versions"], capture_output=True)
-    return output.stdout.strip().decode("utf-8")
+    return run_gitupdate("versions")
 
 def log_tail(log):
     # basename to sanitize input to intended directory
@@ -439,30 +440,8 @@ def tz_name():
 
 
 def tz_set(timezone):
-    uptodate = os.path.normpath(os.path.join(here, "../", "gitupdate.sh"))
-    output = subprocess.run(["sudo", "-u", "pi", uptodate, "settz", timezone], capture_output=True)
-    return output.stdout.strip().decode("utf-8")
+    return run_gitupdate("settz", timezone)
     
 
 def get_diagnostics():
-    p = "/home/pi/Desktop/Mothbox"
-    p = "/home/luke/projects/Web-Mothbox"
-    output = ''
-    commands = [
-        "df -hl",
-        "crontab -u pi -l",
-        f"ls -l {p}"
-        f"ls -l {p}/photos"
-        f"ls -l {p}/logs"
-        f"cd {p} && git status",
-        f"cd {p} && git log --decorate | head -20",
-        f"cd {p}/Web && git status",
-        f"cd {p}/Web && git log --decorate | head -20"
-    ]
-    for cmd in commands:
-        try:
-            output += subprocess.check_output(cmd, shell=True).strip().decode("utf-8")
-        except subprocess.CalledProcessError as e:
-            output += "\n" + str(e) + "\n"
-    return output
-    
+    return run_gitupdate("diagnostic")
