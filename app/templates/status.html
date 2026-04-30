@@ -24,7 +24,7 @@
     <a href="{{url_for('config_operation')}}">Setup wifi</a>
   </p>
   <div class="flex">
-    {% if status.updates == "Update Available" %}
+    {% if status.updates == "Update Available" or request.args.get("force_update") %}
     <form method="POST" action="{{url_for("update_code")}}">
       <input type="submit" class="save" value="Update Software" />
     </form>
