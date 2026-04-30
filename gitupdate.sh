@@ -72,6 +72,7 @@ case "$1" in
         sudo chown -R pi:pi $FW_PATH/photos
         ls -l $FW_PATH
         ls -l $FW_PATH/logs
+        ls -l $FW_PATH/photos
         chmod u+w $FW_PATH/logs/*
         echo ">>> GIT"
         echo $FW_PATH
