@@ -162,7 +162,11 @@ def logs(log):
 
 @app.route('/diagnostics')
 def diagnostics():
-    return '<pre>' + get_diagnostics() + '</pre>'
+    return '<pre>' + run_gitupdate("diagnostics") + '</pre>'
+
+@app.route('/diagnostics/reset', methods=["POST"])
+def diagnostics_reset():
+    return '<pre>' + run_gitupdate("reset") + '</pre>'
 
 @app.route('/data')
 def data():
@@ -443,5 +447,3 @@ def tz_set(timezone):
     return run_gitupdate("settz", timezone)
     
 
-def get_diagnostics():
-    return run_gitupdate("diagnostics")

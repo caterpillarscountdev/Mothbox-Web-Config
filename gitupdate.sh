@@ -65,6 +65,19 @@ case "$1" in
         git status
         git log -1
     ;;
+    "reset")
+        echo ">>> PERMISSIONS"
+        sudo chown -R pi:pi $FW_PATH/.git
+        sudo chown -R pi:pi $FW_PATH/logs
+        chmod u+w $FW_PATH/logs/*
+        echo ">>> GIT"
+        echo $FW_PATH
+        cd $FW_PATH
+        git reset --hard HEAD
+        echo $WEB_PATH
+        cd $WEB_PATH
+        git reset --hard HEAD
+    ;;
     *)
         echo "no command; did you mean versions or uptodate?"
         exit 1
