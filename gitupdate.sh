@@ -48,6 +48,7 @@ case "$1" in
     "diagnostics")
         df -hl
         crontab -u pi -l
+        tail /var/log/apache2/error.log
         ls -l $FW_PATH
         ls -l $FW_PATH/logs
         ls -l $FW_PATH/photos

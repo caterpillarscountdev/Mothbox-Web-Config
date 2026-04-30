@@ -414,7 +414,9 @@ def prepare_form(request, form, source):
 
 def run_gitupdate(*cmd):
     uptodate = os.path.normpath(os.path.join(here, "../", "gitupdate.sh"))
-    output = subprocess.run(["sudo", "-u", "pi", uptodate, *cmd], capture_output=True)
+    c = ["sudo", "-u", "pi", uptodate, *cmd]
+    print(c)
+    output = subprocess.run(c, capture_output=True)
     return output.stdout.strip().decode("utf-8")
     
     
@@ -444,4 +446,4 @@ def tz_set(timezone):
     
 
 def get_diagnostics():
-    return run_gitupdate("diagnostic")
+    return run_gitupdate("diagnostics")
