@@ -83,7 +83,7 @@ case "$1" in
         git reset --hard HEAD
     ;;
     *)
-        echo "no command; did you mean versions or uptodate?"
+        echo "no command; did you mean versions, uptodate, settz, diagnostics, reset?"
         exit 1
     ;;
 esac
