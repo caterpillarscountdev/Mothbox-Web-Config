@@ -414,9 +414,7 @@ def prepare_form(request, form, source):
 
 def run_gitupdate(*cmd):
     uptodate = os.path.normpath(os.path.join(here, "../", "gitupdate.sh"))
-    c = ["sudo", "-u", "pi", uptodate, *cmd]
-    print(c)
-    output = subprocess.run(c, capture_output=True)
+    output = subprocess.run(["sudo", "-u", "pi", uptodate, *cmd], capture_output=True)
     return output.stdout.strip().decode("utf-8")
     
     

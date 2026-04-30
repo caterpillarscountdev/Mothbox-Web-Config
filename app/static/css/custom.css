@@ -144,7 +144,5 @@ form .save, button.action {
 /* Logs */
 
 .log-output {
-    height: 30em;
-    overflow: scroll;
     font-family: monospace;
 }
