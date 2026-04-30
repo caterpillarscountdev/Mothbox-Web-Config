@@ -52,12 +52,14 @@ case "$1" in
         ls -l $FW_PATH
         ls -l $FW_PATH/logs
         ls -l $FW_PATH/photos
+        echo $FW_PATH
         cd $FW_PATH
         git status
-        git log --decorate | head -20
+        git log -1
+        echo $WEB_PATH
         cd $WEB_PATH
         git status
-        git log --decorate | head -20
+        git log -1
     ;;
     *)
         echo "no command; did you mean versions or uptodate?"
