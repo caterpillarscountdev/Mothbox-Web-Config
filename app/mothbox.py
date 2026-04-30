@@ -445,19 +445,24 @@ def tz_set(timezone):
     
 
 def get_diagnostics():
+    p = "/home/pi/Desktop/Mothbox"
+    p = "/home/luke/projects/Web-Mothbox"
     output = ''
     commands = [
         "df -hl",
         "crontab -u pi -l",
-        "cd ~/Desktop/Mothbox && git status",
-        "cd ~/Desktop/Mothbox && git log --decorate | head 20",
-        "cd ~/Desktop/Mothbox/Web && git status",
-        "cd ~/Desktop/Mothbox/Web && git log --decorate | head 20"
+        f"ls -l {p}"
+        f"ls -l {p}/photos"
+        f"ls -l {p}/logs"
+        f"cd {p} && git status",
+        f"cd {p} && git log --decorate | head -20",
+        f"cd {p}/Web && git status",
+        f"cd {p}/Web && git log --decorate | head -20"
     ]
     for cmd in commands:
         try:
             output += subprocess.check_output(cmd, shell=True).strip().decode("utf-8")
         except subprocess.CalledProcessError as e:
-            output += str(e)
+            output += "\n" + str(e) + "\n"
     return output
     
