@@ -158,7 +158,12 @@ def logs(log):
             mtime = None
         logs[log] = mtime
     return render_template("view_logs.html", site=site(), logs=logs)
-        
+
+
+@app.route('/diagnostics')
+def diagnostics():
+    return '<pre>' + get_diagnostics() + '</pre>'
+
 @app.route('/data')
 def data():
     sets = datasets.get_datasets()
@@ -437,4 +442,22 @@ def tz_set(timezone):
     uptodate = os.path.normpath(os.path.join(here, "../", "gitupdate.sh"))
     output = subprocess.run(["sudo", "-u", "pi", uptodate, "settz", timezone], capture_output=True)
     return output.stdout.strip().decode("utf-8")
+    
+
+def get_diagnostics():
+    output = ''
+    commands = [
+        "df -hl",
+        "crontab -u pi -l",
+        "cd ~/Desktop/Mothbox && git status",
+        "cd ~/Desktop/Mothbox && git log --decorate | head 20",
+        "cd ~/Desktop/Mothbox/Web && git status",
+        "cd ~/Desktop/Mothbox/Web && git log --decorate | head 20"
+    ]
+    for cmd in commands:
+        try:
+            output += subprocess.check_output(cmd, shell=True).strip().decode("utf-8")
+        except subprocess.CalledProcessError as e:
+            output += str(e)
+    return output
     

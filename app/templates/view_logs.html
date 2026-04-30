@@ -6,6 +6,13 @@
 
 <h2>View Logs</h2>
 
+<button class="action"
+        hx-get="{{url_for('diagnostics')}}"
+        hx-on:htmx:after-settle="event.detail.target.children[0].scrollIntoView(false)"
+        hx-target="div.log-output"
+>Diagnostic Check</button>
+
+
 <div class="flex">
   {% for log, mtime in logs.items() %}
   <button class="action"
