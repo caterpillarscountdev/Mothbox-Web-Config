@@ -78,6 +78,8 @@ case "$1" in
         echo $FW_PATH
         cd $FW_PATH
         git reset --hard HEAD
+        rm -r .git/refs/remotes/origin
+        git pull
         echo $WEB_PATH
         cd $WEB_PATH
         git reset --hard HEAD
