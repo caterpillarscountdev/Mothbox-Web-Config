@@ -70,6 +70,7 @@ case "$1" in
         sudo chown -R pi:pi $FW_PATH/.git
         sudo chown -R pi:pi $FW_PATH/logs
         sudo chown -R pi:pi $FW_PATH/photos
+        chmod a+w $FW_PATH/*.csv
         ls -l $FW_PATH
         ls -l $FW_PATH/logs
         ls -l $FW_PATH/photos
@@ -80,7 +81,7 @@ case "$1" in
         git remote remove origin
         git remote add origin https://github.com/caterpillarscountdev/Mothbox-Firmware.git
         git pull
-        git branch --set-upstream-to=origin/main main
+        git branch --set-upstream-to=origin/main --track main
         git pull
         echo $WEB_PATH
         cd $WEB_PATH
