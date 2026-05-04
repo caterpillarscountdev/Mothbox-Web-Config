@@ -77,11 +77,10 @@ case "$1" in
         echo ">>> GIT"
         echo $FW_PATH
         cd $FW_PATH
-        git reset --hard HEAD
-        rm -r .git/refs/remotes/origin
-        git checkout main
+        git remote remove origin
+        git remote add origin https://github.com/caterpillarscountdev/Mothbox-Firmware.git
         git pull
-        git reset --hard origin/main
+        git branch --set-upstream-to=origin/main main
         git pull
         echo $WEB_PATH
         cd $WEB_PATH
