@@ -71,6 +71,8 @@ case "$1" in
         sudo chown -R pi:pi $FW_PATH/logs
         sudo chown -R pi:pi $FW_PATH/photos
         chmod a+w $FW_PATH/*.csv
+        chmod a+w $FW_PATH/*.txt
+        sudo usermod -a -G gpio www-data        
         ls -l $FW_PATH
         ls -l $FW_PATH/logs
         ls -l $FW_PATH/photos
