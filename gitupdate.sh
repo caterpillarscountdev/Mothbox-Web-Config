@@ -81,6 +81,8 @@ case "$1" in
         rm -r .git/refs/remotes/origin
         git checkout main
         git pull
+        git reset --hard origin/main
+        git pull
         echo $WEB_PATH
         cd $WEB_PATH
         git reset --hard HEAD
