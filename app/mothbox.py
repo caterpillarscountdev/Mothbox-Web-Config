@@ -135,7 +135,7 @@ def test_device(device):
                 return "No photos"
         case "camera_raw":
             testing.camera_raw()
-            return "Camera is taking a hardware photo"
+            return f"Camera is taking a hardware photo. <div hx-post='{url_for('test_device', device='photo_raw')}' hx-trigger='every 5s'></div>"
         case "photo_raw":
             photo = testing.camera_raw_latest_photo()
             if photo:
