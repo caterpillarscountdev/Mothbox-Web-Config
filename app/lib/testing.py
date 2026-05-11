@@ -1,4 +1,5 @@
 import subprocess
+import os
 
 from .switches import pin_relay_state, pin_relay_set, pins
 from . import datasets
@@ -39,4 +40,13 @@ def camera_latest_photo():
     sets = datasets.get_datasets()
     if sets:
         return sets[0].photos()[-1]
+    return None
+
+def camera_raw():
+    subprocess.Popen(["sudo", "-u", "pi", "/home/pi/Desktop/Mothbox/TakePhoto.py", "raw"], stdout=None, stderr=None, cwd="/tmp")
+    
+
+def camera_raw_latest_photo():
+    if os.path.exists("/tmp/test_photos/test.jpg"):
+        return "thumbnails/test.jpg"
     return None

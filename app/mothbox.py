@@ -133,6 +133,15 @@ def test_device(device):
                 return render_template("hx/latest_photo.html", photo=photo)
             else:
                 return "No photos"
+        case "camera_raw":
+            testing.camera_raw()
+            return "Camera is taking a hardware photo"
+        case "photo_raw":
+            photo = testing.camera_raw_latest_photo()
+            if photo:
+                return render_template("hx/latest_photo.html", photo=photo)
+            else:
+                return "No hw photo"
         case None:
             return render_template("test_device.html", site=site())
         case _:
@@ -408,6 +417,9 @@ def serve_photo_media(name):
     if name.startswith("thumbnails/"):
         name = name.replace("thumbnails/", "")
         folder = app.config['THUMBNAIL_MEDIA_THUMBNAIL_ROOT']
+    if name.startswith("tests"):
+        name = name.replace("tests/", "")
+        folder = "/tmp/test_photos"
     return send_from_directory(folder, name)
 
 
