@@ -48,5 +48,5 @@ def camera_raw():
 
 def camera_raw_latest_photo():
     if os.path.exists("/tmp/test_photos/test.jpg"):
-        return "thumbnails/test.jpg"
+        return "tests/test.jpg"
     return None
