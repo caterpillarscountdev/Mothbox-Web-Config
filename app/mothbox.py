@@ -139,7 +139,7 @@ def test_device(device):
         case "photo_raw":
             photo = testing.camera_raw_latest_photo()
             if photo:
-                return render_template("hx/latest_photo.html", photo=photo)
+                return f"<img src='{ url_for('serve_photo_media', name=photo) }' width=400 />"
             else:
                 return "No hw photo"
         case None:
