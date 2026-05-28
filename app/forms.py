@@ -26,6 +26,7 @@ class ScheduleForm(Form):
     onlyflash = BooleanField("Only use Flash to attract")
     attractOffPhoto = BooleanField("Turn Attract off during photo capture")
     attracttwo = BooleanField("Enable second attract strip (higher power)")
+    poweredDay = BooleanField("Power always available, turn on at 9am for upload")
 
     
 class OperationForm(Form):
