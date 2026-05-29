@@ -18,6 +18,14 @@
       <li><strong>{{s}}</strong> on <em>{{d}}</em> at <em>{{wifi_devices.get(d, None)}}</em></li>
       {%endfor%}
     </ul>
+    <div class="hidden-children" onclick="this.classList.remove('hidden-children');">Unstable wifi? &#x2192;
+      <div class="flex" >
+        <a href="{{url_for('config_operation')}}?swap_wifi=1">
+          <button class="action">Swap wifi interfaces</button>
+        </a>
+      </div>
+    </div>
+    
     <label>Add new wifi</label>
     <p>
       {% if wifi_devices|length > 1 %}

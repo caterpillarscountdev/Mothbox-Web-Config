@@ -340,6 +340,9 @@ def config_operation_wifi_networks():
 def config_operation():
     form = forms.OperationForm(request.form or MultiDict())
 
+    if request.method == "GET" and request.args.get("swap_wifi"):
+        wifi.swap_interfaces()
+
     if request.method == 'POST':
         if form.validate():
             d = dict(form.data)
