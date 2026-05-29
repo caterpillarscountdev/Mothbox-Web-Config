@@ -91,7 +91,7 @@ case "$1" in
         git pull
         cd $FW_PATH
         echo "Rescheduling"
-        /usr/bin/python3 -u Scheduler.py no_wait
+        /usr/bin/python3 -u Scheduler.py no_wait 2>&1
     ;;
     *)
         echo "no command; did you mean versions, uptodate, settz, diagnostics, reset?"
