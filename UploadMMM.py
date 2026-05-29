@@ -129,10 +129,13 @@ if __name__ == "__main__":
             
     print(f"{formatted_time} Upload\n")
     with settings.Settings() as setts:
-        device_key = DEVICE_KEY or setts.metadata.get("DeviceKey")
-        # Update MMM config record
-        config_post(device_key, setts, version, {})
-        # Run an upload
-        d, total = run_upload(device_key, setts.controls["name"])
+        try:
+            device_key = DEVICE_KEY or setts.metadata.get("DeviceKey")
+            # Update MMM config record
+            config_post(device_key, setts, version, {})
+            # Run an upload
+            d, total = run_upload(device_key, setts.controls["name"])
+        except requests.exceptions.ConnectionError as e:
+            print(f"ConnectionError: {e}")
 
 
