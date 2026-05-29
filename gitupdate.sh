@@ -89,6 +89,9 @@ case "$1" in
         cd $WEB_PATH
         git reset --hard HEAD
         git pull
+        cd $FW_PATH
+        echo "Rescheduling"
+        /usr/bin/python3 -u Scheduler.py no_wait
     ;;
     *)
         echo "no command; did you mean versions, uptodate, settz, diagnostics, reset?"
