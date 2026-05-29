@@ -64,6 +64,9 @@ case "$1" in
         cd $WEB_PATH
         git status
         git log -1
+        echo ">>> LOGS"
+        cd $FW_PATH
+        find ./logs -type f | xargs tail
     ;;
     "reset")
         echo ">>> PERMISSIONS"
@@ -80,14 +83,12 @@ case "$1" in
         echo ">>> GIT"
         echo $FW_PATH
         cd $FW_PATH
-        git remote remove origin
-        git remote add origin https://github.com/caterpillarscountdev/Mothbox-Firmware.git
-        git pull
-        git branch --set-upstream-to=origin/main --track main
+        git reset --hard HEAD
         git pull
         echo $WEB_PATH
         cd $WEB_PATH
         git reset --hard HEAD
+        git pull
     ;;
     *)
         echo "no command; did you mean versions, uptodate, settz, diagnostics, reset?"
