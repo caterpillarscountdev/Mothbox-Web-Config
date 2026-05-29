@@ -61,7 +61,7 @@ def connect(ssid, password):
 
 def swap_interfaces():
     primary = ifname(primary=True)
-    secondary = ifname(secondary=True)
+    secondary = ifname(primary=False)
 
     connections = current_connections()
     
