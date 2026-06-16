@@ -50,7 +50,7 @@ case "$1" in
         echo ">>> CRON"
         crontab -u pi -l | grep ^[^#]
         echo ">>> ERRORS"
-        tail /var/log/apache2/error.log
+        tail -15 /var/log/apache2/error.log
         echo ">>> DIRS"
         ls -l $FW_PATH
         ls -l $FW_PATH/logs
