@@ -3,6 +3,8 @@ try:
 except ImportError:
     gpiod = None
 
+import os
+
 class pins:
     off = 16
     debug = 12
@@ -10,7 +12,13 @@ class pins:
     attract = 21
     attracttwo = 26
 
-GPIO_DEVICE = "/dev/gpiochip4"
+for dev in ["/dev/gpiochip4", "/dev/gpiochip15"]:
+    try:
+        if os.stat(dev):
+            GPIO_DEVICE = dev
+            break
+    except FileNotFoundError:
+        continue
 
 if gpiod:
     INPUT_LINE_SETTING = gpiod.LineSettings(
