@@ -56,6 +56,7 @@ def site():
                      {"url": url_for("config_schedule"), "title": "Schedule"},
                      {"url": url_for("config_operation"), "title": "Wifi"},
                      {"url": url_for("config_camera"), "title": "Camera"},
+                     {"url": url_for("config_device"), "title": "Device"},
                      {"url": url_for("logs"), "title": "Logs"}
                 ]}
             ]
@@ -383,11 +384,27 @@ def config_camera():
                 d["AutoCalibration"] = int(d["AutoCalibration"])
                 d["VerticalFlip"] = int(d["VerticalFlip"])
                 
-                setts.update({"camera", d})
+                setts.update({"camera": d})
                 flash("Saved configuration", "ok")
             else:
                 flash("Validation error", "error")
         return render_template("config_camera.html", site=site(), form=form)
+
+@app.route("/config/device", methods=["GET", "POST"])
+def config_device():
+    with settings.Settings() as setts:
+        form = forms.DeviceForm(request.form or MultiDict(setts.schedule))
+
+        if request.method == 'POST':
+            if form.validate():
+                d = dict(form.data)
+                setts.update({"schedule": d})
+                if d.get("name_override"):
+                    setts.update({"controls": {"name": d["name_override"]}})
+                flash("Saved configuration", "ok")
+            else:
+                flash("Validation error", "error")
+        return render_template("config_device.html", site=site(), form=form, name=setts.controls.get("name"))
 
 @app.route("/update-code", methods=["POST"])
 def update_code():

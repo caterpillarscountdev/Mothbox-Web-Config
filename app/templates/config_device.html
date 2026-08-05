@@ -1,0 +1,20 @@
+{% extends "default.html" %}
+{% from "_forms.html" import render_field %}
+
+{% block title %}Device Configuration{% endblock %}
+
+{% block content %}
+
+<h2>Device Configuration</h2>
+
+<form name="config" autocomplete="off" method="POST">
+  <fieldset>
+    <label>Unique name is currently: {{name}}</label>
+    {{ render_field(form.name_override) }}
+    <em>Please contact support before changing this!<br> Unsetting override will take effect after restart.</em>
+  </fieldset>
+  
+  <input class="save" type="submit" value="Save" />
+</form>
+
+{% endblock %}
