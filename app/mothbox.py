@@ -162,7 +162,8 @@ def logs(log):
 
 @app.route('/reboot', methods=["POST"])
 def reboot():
-    subprocess.run(["sudo", "reboot"])
+    run_gitupdate("reboot")
+    return "rebooting"
 
 @app.route('/diagnostics')
 def diagnostics():
