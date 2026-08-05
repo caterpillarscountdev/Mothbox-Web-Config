@@ -74,8 +74,8 @@ def status():
         metadata = setts.metadata
         schedule = setts.schedule
 
-        schedule["days"] = [forms.days_of_week[int(x)-1] for x in schedule["weekday"].split(";")]
-        schedule["hours"] = [f'{int(x):02}:{int(schedule["minute"]):02}' for x in schedule["hour"].split(";")]
+        schedule["days"] = [forms.days_of_week[int(x)-1] for x in schedule["weekday"].split(";") if x]
+        schedule["hours"] = [f'{int(x):02}:{int(schedule["minute"]):02}' for x in schedule["hour"].split(";") if x]
         schedule["timezone"] = tz_name()
         schedule["now"] = datetime.now().astimezone(pytz.timezone(schedule["timezone"]))
 
@@ -163,7 +163,7 @@ def logs(log):
 @app.route('/reboot', methods=["POST"])
 def reboot():
     run_gitupdate("reboot")
-    return "rebooting"
+    return 'rebooting: <a href="/">Return</a>'
 
 @app.route('/diagnostics')
 def diagnostics():
