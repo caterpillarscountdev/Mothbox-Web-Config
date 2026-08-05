@@ -45,6 +45,9 @@ case "$1" in
         sudo timedatectl set-timezone $2
         echo "TZ set to $2"
     ;;
+    "reboot")
+        sudo reboot
+    ;;
     "diagnostics")
         df -hl
         echo ">>> CRON"

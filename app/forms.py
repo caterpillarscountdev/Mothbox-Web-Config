@@ -64,6 +64,10 @@ class SiteForm(Form):
     ScaleBarPresent = BooleanField("Scale Bar Present?")
     ColorStandardPresent = BooleanField("Color Standard Present?")
 
+class DeviceForm(Form):
+    name_override = StringField("Override unique device name")
+    
+
 class SetupForm(ScheduleForm, OperationForm, SiteForm):
     LandingSheet = None
     AttractorType = None
