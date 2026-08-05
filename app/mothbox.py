@@ -160,6 +160,9 @@ def logs(log):
         logs[log] = mtime
     return render_template("view_logs.html", site=site(), logs=logs)
 
+@app.route('/reboot', methods=["POST"])
+def reboot():
+    subprocess.run(["sudo", "reboot"])
 
 @app.route('/diagnostics')
 def diagnostics():
