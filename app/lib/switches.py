@@ -12,6 +12,7 @@ class pins:
     attract = 21
     attracttwo = 26
 
+GPIO_DEVICE = None
 for dev in ["/dev/gpiochip4", "/dev/gpiochip15"]:
     try:
         if os.stat(dev):
@@ -39,7 +40,7 @@ if gpiod:
     )
     
 def mode():
-    if not gpiod:
+    if not gpiod or not GPIO_DEVICE:
         return 'NOT_PI_DEVICE'
     mode = "FIELD"  # possible modes are OFF or ONLINE or FIELD/ACTIVE
     if pin_connected_to_ground(pins.debug):
