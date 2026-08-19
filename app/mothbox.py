@@ -155,7 +155,7 @@ def logs(log):
     for log in lognames:
         try:
             mtime = datetime.fromtimestamp(os.path.getmtime(log_get_path(log)))
-        except FileNotFoundError:
+        except (FileNotFoundError, TypeError):
             mtime = None
         logs[log] = mtime
     return render_template("view_logs.html", site=site(), logs=logs)
@@ -452,11 +452,20 @@ def check_for_versions():
 def log_tail(log):
     # basename to sanitize input to intended directory
     path = log_get_path(log)
+    if not path:
+        return ""
     output = subprocess.run(["tail", "-100", path], capture_output=True)
     return output.stdout.strip().decode("utf-8")
     
 def log_get_path(log):
-    return os.path.normpath(os.path.join(here, "../../logs/", os.path.basename(log)+"_log.txt"))
+    n = os.path.basename(log)+"_log.txt"
+    for name in [f"{n}{x}" for x in ["", ".1", ".2", ".3", ".4"]]:
+        path = os.path.normpath(os.path.join(here, "../../logs/", name))
+        try:
+            if os.stat(path).st_size > 0:
+                return path
+        except FileNotFoundError:
+            continue
 
 
 def tz_name():
