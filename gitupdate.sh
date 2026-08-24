@@ -69,7 +69,7 @@ case "$1" in
         git log -1
         echo ">>> LOGS"
         cd $FW_PATH
-        find ./logs -type f | sort -n | xargs -t -L1 tail -50
+        find ./logs -type f | sort -n | xargs -t -L1 tail -100
     ;;
     "reset")
         echo ">>> PERMISSIONS"
