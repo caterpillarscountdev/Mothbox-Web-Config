@@ -3,6 +3,7 @@ from pathlib import Path
 from datetime import datetime, timezone
 
 here = os.path.dirname(os.path.realpath(__file__))
+TEST_ROOT = os.path.normpath(os.path.join(here, "..", "..", "..", "test_photos"))
 PHOTOS_ROOT = os.path.normpath(os.path.join(here, "..", "..", "..", "photos"))
 THUMBS_ROOT = os.path.normpath(os.path.join(here, "..", "..", "..", "thumbnails"))
 
@@ -69,5 +70,5 @@ class Dataset:
         return os.path.join(self.dir, 'metadata.zip')
         
 
-def get_datasets():
-    return [ Dataset(d) for d in sorted(os.listdir(PHOTOS_ROOT), reverse=True)]
+def get_datasets(root=PHOTOS_ROOT):
+    return [ Dataset(d) for d in sorted(os.listdir(root), reverse=True)]
