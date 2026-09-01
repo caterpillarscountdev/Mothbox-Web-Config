@@ -38,7 +38,7 @@ class Dataset:
         else:
             self._uploaded.unlink(missing_ok=True)
         try:
-            os.chmod(0o666, self._uploaded)
+            os.chmod(self._uploaded, 0o666)
         except (FileNotFoundError, PermissionError):
             pass
 
@@ -70,7 +70,7 @@ class Dataset:
         with self._upload_remaining.open("w") as f:
             json.dump(files, f)
         try:
-            os.chmod(0o666, self._upload_remaining)
+            os.chmod(self._upload_remaining, 0o666)
         except (FileNotFoundError, PermissionError):
             pass
             
