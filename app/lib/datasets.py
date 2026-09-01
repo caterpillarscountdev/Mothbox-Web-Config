@@ -37,6 +37,10 @@ class Dataset:
             self._uploaded.touch()
         else:
             self._uploaded.unlink(missing_ok=True)
+        try:
+            os.chmod(0o666, self._uploaded)
+        except (FileNotFoundError, PermissionError):
+            pass
 
     @property
     def upload_total(self):
@@ -65,6 +69,10 @@ class Dataset:
     def set_upload_remaining(self, files):
         with self._upload_remaining.open("w") as f:
             json.dump(files, f)
+        try:
+            os.chmod(0o666, self._upload_remaining)
+        except (FileNotFoundError, PermissionError):
+            pass
             
     def metadata_zip(self):
         return os.path.join(self.dir, 'metadata.zip')
