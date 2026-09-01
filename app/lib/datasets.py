@@ -8,9 +8,9 @@ PHOTOS_ROOT = os.path.normpath(os.path.join(here, "..", "..", "..", "photos"))
 THUMBS_ROOT = os.path.normpath(os.path.join(here, "..", "..", "..", "thumbnails"))
 
 class Dataset:
-    def __init__(self, dir):
+    def __init__(self, dir, root=PHOTOS_ROOT):
         self.dir = dir
-        self.path = os.path.join(PHOTOS_ROOT, dir)
+        self.path = os.path.join(root, dir)
 
     def photos(self):
         return [os.path.join(self.dir, os.path.basename(f)) for f in sorted(glob.glob(os.path.join(self.path, "*.jpg")))]
@@ -71,4 +71,4 @@ class Dataset:
         
 
 def get_datasets(root=PHOTOS_ROOT):
-    return [ Dataset(d) for d in sorted(os.listdir(root), reverse=True)]
+    return [ Dataset(d, root=root) for d in sorted(os.listdir(root), reverse=True)]
