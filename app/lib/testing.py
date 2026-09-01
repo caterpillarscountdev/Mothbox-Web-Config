@@ -36,7 +36,10 @@ def camera_take_photo():
 
 def camera_latest_photo():
     #attract_off()
-    sets = datasets.get_datasets(root=datasets.TEST_ROOT)
-    if sets:
-        return sets[0].photos()[-1]
+    try:
+        sets = datasets.get_datasets(root=datasets.TEST_ROOT)
+        if sets:
+            return sets[0].photos()[-1]
+    except FileNotFoundError as e:
+        pass
     return None
