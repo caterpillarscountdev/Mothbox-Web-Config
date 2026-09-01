@@ -20,7 +20,7 @@ app.secret_key = 'notverysecretindev'
 here = os.path.dirname(os.path.realpath(__file__))
 
 thumbs = Thumbnail(app)
-app.config['THUMBNAIL_MEDIA_ROOT'] = datasets.PHOTOS_ROOT
+app.config['THUMBNAIL_MEDIA_ROOT'] = os.path.normpath(os.path.join(datasets.PHOTOS_ROOT, ".."))
 app.config['THUMBNAIL_MEDIA_URL'] = '/media/'
 app.config['THUMBNAIL_MEDIA_THUMBNAIL_ROOT'] = datasets.THUMBS_ROOT
 app.config['THUMBNAIL_MEDIA_THUMBNAIL_URL'] = '/media/thumbnails/'
@@ -131,7 +131,7 @@ def test_device(device):
         case "photo":
             photo = testing.camera_latest_photo()
             if photo:
-                return render_template("hx/latest_photo.html", photo=photo)
+                return render_template("hx/latest_photo.html", photo="test_photos/"+photo)
             else:
                 return "No photos"
         case None:
@@ -233,7 +233,7 @@ def data_upload_done(dir):
 @app.route('/data/gallery/<dir>')
 def data_gallery(dir):
     set = datasets.Dataset(dir)
-    return stream_template("hx/data_gallery.html", photos = set.photos(), width='200')
+    return stream_template("hx/data_gallery.html", photos = ["photos/"+x for x in set.photos()], width='200')
 
 
 @app.route("/setup", methods=["GET", "POST"])

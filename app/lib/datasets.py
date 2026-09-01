@@ -3,13 +3,14 @@ from pathlib import Path
 from datetime import datetime, timezone
 
 here = os.path.dirname(os.path.realpath(__file__))
+TEST_ROOT = os.path.normpath(os.path.join(here, "..", "..", "..", "test_photos"))
 PHOTOS_ROOT = os.path.normpath(os.path.join(here, "..", "..", "..", "photos"))
 THUMBS_ROOT = os.path.normpath(os.path.join(here, "..", "..", "..", "thumbnails"))
 
 class Dataset:
-    def __init__(self, dir):
+    def __init__(self, dir, root=PHOTOS_ROOT):
         self.dir = dir
-        self.path = os.path.join(PHOTOS_ROOT, dir)
+        self.path = os.path.join(root, dir)
 
     def photos(self):
         return [os.path.join(self.dir, os.path.basename(f)) for f in sorted(glob.glob(os.path.join(self.path, "*.jpg")))]
@@ -36,6 +37,10 @@ class Dataset:
             self._uploaded.touch()
         else:
             self._uploaded.unlink(missing_ok=True)
+        try:
+            os.chmod(self._uploaded, 0o666)
+        except (FileNotFoundError, PermissionError):
+            pass
 
     @property
     def upload_total(self):
@@ -64,10 +69,14 @@ class Dataset:
     def set_upload_remaining(self, files):
         with self._upload_remaining.open("w") as f:
             json.dump(files, f)
+        try:
+            os.chmod(self._upload_remaining, 0o666)
+        except (FileNotFoundError, PermissionError):
+            pass
             
     def metadata_zip(self):
         return os.path.join(self.dir, 'metadata.zip')
         
 
-def get_datasets():
-    return [ Dataset(d) for d in sorted(os.listdir(PHOTOS_ROOT), reverse=True)]
+def get_datasets(root=PHOTOS_ROOT):
+    return [ Dataset(d, root=root) for d in sorted(os.listdir(root), reverse=True)]
