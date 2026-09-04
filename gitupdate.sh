@@ -52,6 +52,8 @@ case "$1" in
         df -hl
         echo ">>> CRON"
         crontab -u pi -l | grep ^[^#]
+        echo ">>> RTC"
+        grep . /sys/class/rtc/rtc0/*voltage*
         echo ">>> ERRORS"
         tail -15 /var/log/apache2/error.log
         echo ">>> DIRS"
